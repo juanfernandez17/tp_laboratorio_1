@@ -25,17 +25,11 @@ int main(void)
 	float precioBitcoinLatam;
 	float precioUnitarioLatam;
 	float diferenciaDePrecio;
-	float kmCargaForzada;
-	float precioAerolineasCargaForzada;
-	float precioLatamCargaForzada;
 	int flagCalcularCostos;
 
 	kmIngresados = 0; // Inicializo KMs, precioAerolineas y precioLatam para que antes de que el usuario ingrese uno de estos valores aparezcan en 0
 	precioAerolineas = 0;
 	precioLatam = 0;
-	kmCargaForzada = 7090;
-	precioAerolineasCargaForzada = 162965;
-	precioLatamCargaForzada = 159339;
 	flagCalcularCostos = 0; /* 0 = no se realizaron los calculos, por lo tanto NO se pueden mostrar los resultados
 	 	 	 	 	 	 	   1 = se realizaron los calculos y ya se pueden mostrar los resultados */
 	do
@@ -84,23 +78,26 @@ int main(void)
 					MostrarResultados(precioDebitoLatam, precioCreditoLatam, precioBitcoinLatam, precioUnitarioLatam);
 					printf("\nPrecio Aerolineas: $%.2f", precioAerolineas);
 					MostrarResultados(precioDebitoAerolineas, precioCreditoAerolineas, precioBitcoinAerolineas, precioUnitarioAerolineas);
-					printf("\n\nLa diferencia de precio es: $ %.2f\n\n", diferenciaDePrecio);
+					printf("\nLa diferencia de precio es: $ %.2f\n", diferenciaDePrecio);
 				}
 				break;
 			case 5:
-				precioDebitoAerolineas = CalcularPrecioConDebito(precioAerolineasCargaForzada);
-				precioCreditoAerolineas = CalcularPrecioConCredito(precioAerolineasCargaForzada);
-				precioBitcoinAerolineas = CalcularPrecioConBitcoin(precioAerolineasCargaForzada);
-				precioUnitarioAerolineas = CalcularPrecioUnitario(kmCargaForzada, precioAerolineasCargaForzada);
-				precioDebitoLatam = CalcularPrecioConDebito(precioLatamCargaForzada);
-				precioCreditoLatam = CalcularPrecioConCredito(precioLatamCargaForzada);
-				precioBitcoinLatam = CalcularPrecioConBitcoin(precioLatamCargaForzada);
-				precioUnitarioLatam = CalcularPrecioUnitario(kmCargaForzada, precioLatamCargaForzada);
-				diferenciaDePrecio = CalcularDiferencia(precioAerolineasCargaForzada, precioLatamCargaForzada);
-				printf("KMs Ingresados: %.2f km", kmCargaForzada);
-				printf("\n\nPrecio Aerolineas: $%.2f", precioAerolineasCargaForzada);
+				kmIngresados = 7090;
+				precioAerolineas = 162965;
+				precioLatam = 159339;
+				precioDebitoAerolineas = CalcularPrecioConDebito(precioAerolineas);
+				precioCreditoAerolineas = CalcularPrecioConCredito(precioAerolineas);
+				precioBitcoinAerolineas = CalcularPrecioConBitcoin(precioAerolineas);
+				precioUnitarioAerolineas = CalcularPrecioUnitario(kmIngresados, precioAerolineas);
+				precioDebitoLatam = CalcularPrecioConDebito(precioLatam);
+				precioCreditoLatam = CalcularPrecioConCredito(precioLatam);
+				precioBitcoinLatam = CalcularPrecioConBitcoin(precioLatam);
+				precioUnitarioLatam = CalcularPrecioUnitario(kmIngresados, precioLatam);
+				diferenciaDePrecio = CalcularDiferencia(precioAerolineas, precioLatam);
+				printf("KMs Ingresados: %.2f km", kmIngresados);
+				printf("\n\nPrecio Aerolineas: $%.2f", precioAerolineas);
 				MostrarResultados(precioDebitoAerolineas, precioCreditoAerolineas, precioBitcoinAerolineas, precioUnitarioAerolineas);
-				printf("\nPrecio Latam: $%.2f", precioLatamCargaForzada);
+				printf("\nPrecio Latam: $%.2f", precioLatam);
 				MostrarResultados(precioDebitoLatam,precioCreditoLatam, precioBitcoinLatam, precioUnitarioLatam);
 				printf("\nLa diferencia de precio es: $%.2f\n", diferenciaDePrecio);
 				break;

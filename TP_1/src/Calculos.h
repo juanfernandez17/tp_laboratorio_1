@@ -26,7 +26,7 @@ float CalcularPrecioConCredito(float);
 /// @return float Precio final a pagar con Bitcoins
 float CalcularPrecioConBitcoin(float);
 
-/// @brief	Recibe el precio inicial de el vuelo de Latam y el vuelo de Aerolineas, calcula la diferencia de precios y lo devuelve
+/// @brief	Recibe el precio inicial del vuelo (Latam o Aerolineas) y los KMs ingresados para calcular el precio unitario
 ///
 /// @param float KMs ingresados
 /// @param float Precio inicial del vuelo

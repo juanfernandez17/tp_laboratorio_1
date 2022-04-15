@@ -7,51 +7,51 @@
 
 #include "Calculos.h"
 
-float CalcularPrecioConDebito(float precio)
+float CalcularPrecioConDebito(float precioVuelo)
 {
 	float precioTotal;
 
-	precioTotal = precio * 0.9;
+	precioTotal = precioVuelo * 0.9;
 	return precioTotal;
 }
 
-float CalcularPrecioConCredito(float precio)
+float CalcularPrecioConCredito(float precioVuelo)
 {
 	float precioTotal;
 
-	precioTotal = precio * 1.25;
+	precioTotal = precioVuelo * 1.25;
 	return precioTotal;
 }
 
-float CalcularPrecioConBitcoin(float precio)
+float CalcularPrecioConBitcoin(float precioVuelo)
 {
 	float precioTotal;
 	float precioBitcoin;
 
 	precioBitcoin = 4606954.55;
-	precioTotal = precio / precioBitcoin;
+	precioTotal = precioVuelo / precioBitcoin;
 	return precioTotal;
 }
 
-float CalcularPrecioUnitario(float km, float precio)
+float CalcularPrecioUnitario(float km, float precioVuelo)
 {
 	float precioUnitario;
 
-	precioUnitario = precio / km;
+	precioUnitario = precioVuelo / km;
 	return precioUnitario;
 }
 
-float CalcularDiferencia(float precioVueloAerolineas, float precioVueloLatam)
+float CalcularDiferencia(float precioAerolineas, float precioLatam)
 {
-	float diferencia;
+	float diferenciaDePrecio;
 
-	if(precioVueloAerolineas > precioVueloLatam)
+	if(precioAerolineas > precioLatam)
 	{
-		diferencia = precioVueloAerolineas - precioVueloLatam;
+		diferenciaDePrecio = precioAerolineas - precioLatam;
 	}
 	else
 	{
-		diferencia = precioVueloLatam - precioVueloAerolineas;
+		diferenciaDePrecio = precioLatam - precioAerolineas;
 	}
-	return diferencia;
+	return diferenciaDePrecio;
 }
