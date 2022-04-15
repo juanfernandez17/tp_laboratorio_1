@@ -1,5 +1,5 @@
 /*
- * MetodosDePago.h
+ * Calculos.h
 
  	 Fernàndez Juan Ignacio 1ºB
  	 Trabajo pràctico Nº1
@@ -12,19 +12,19 @@
 ///
 /// @param float Precio inicial del vuelo
 /// @return	float Precio final con el 10% de descuento aplicado
-float PagarConTarjetaDebito(float);
+float CalcularPrecioConDebito(float);
 
 /// @brief Recibe el precio inicial del vuelo, calcula el precio final a pagar con tarjeta de crèdito (25% de interès) y lo devuelve
 ///
 /// @param float Precio inicial del vuelo
 /// @return float Precio final con el 25% de interes aplicado
-float PagarConTarjetaCredito(float);
+float CalcularPrecioConCredito(float);
 
 /// @brief Recibe el precio inicial del vuelo, calcula el precio final a pagar con Bitcoins y lo devuelve
 ///
 /// @param float Precio del vuelo
 /// @return float Precio final a pagar con Bitcoins
-float PagarConBitcoin(float);
+float CalcularPrecioConBitcoin(float);
 
 /// @brief	Recibe el precio inicial de el vuelo de Latam y el vuelo de Aerolineas, calcula la diferencia de precios y lo devuelve
 ///

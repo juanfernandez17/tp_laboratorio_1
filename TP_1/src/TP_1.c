@@ -14,74 +14,60 @@ int main(void)
 
 	int opcion;
 	float kmIngresados;
-	float precioVueloAerolineas;
-	float precioVueloLatam;
-	// Creo los array para colocara en la posicion [0] el precio de Aerolineas y en la posicion [1] el precio de Latam
-	float precioConDebito[2];
-	float precioConCredito[2];
-	float precioConBitcoin[2];
-	float precioUnitario[2];
+	float precioAerolineas;
+	float precioLatam;
+	float precioDebitoAerolineas;
+	float precioCreditoAerolineas;
+	float precioBitcoinAerolineas;
+	float precioUnitarioAerolineas;
+	float precioDebitoLatam;
+	float precioCreditoLatam;
+	float precioBitcoinLatam;
+	float precioUnitarioLatam;
 	float diferenciaDePrecio;
 	float kmCargaForzada;
-	float precioVueloAerolineasCargaForzada;
-	float precioVueloLatamCargaForzada;
+	float precioAerolineasCargaForzada;
+	float precioLatamCargaForzada;
 	int flagCalcularCostos;
 
-	kmIngresados = 0;
-	precioVueloAerolineas = 0;
-	precioVueloLatam = 0;
+	kmIngresados = 0; // Inicializo KMs, precioAerolineas y precioLatam para que antes de que el usuario ingrese uno de estos valores aparezcan en 0
+	precioAerolineas = 0;
+	precioLatam = 0;
 	kmCargaForzada = 7090;
-	precioVueloAerolineasCargaForzada = 162965;
-	precioVueloLatamCargaForzada = 159339;
+	precioAerolineasCargaForzada = 162965;
+	precioLatamCargaForzada = 159339;
 	flagCalcularCostos = 0; /* 0 = no se realizaron los calculos, por lo tanto NO se pueden mostrar los resultados
 	 	 	 	 	 	 	   1 = se realizaron los calculos y ya se pueden mostrar los resultados */
 	do
 	{
-		//Menù
-		printf("\n1. Ingresar Kilòmetros: (km = %.2f)", kmIngresados);
-		printf("\n2. Ingresar Precio de Vuelos: (Aerolineas = %.2f, Latam = %.2f)", precioVueloAerolineas, precioVueloLatam);
-		printf("\n3. Calcular todos los costos: "
-				"\n   a) Tarjeta de dèbito (descuento 10%%)"
-				"\n   b) Tarjeta de crèdito (interès 25%%)"
-				"\n   c) Bitcoin (1BTC -> 4606954.55 Pesos Argentinos)"
-				"\n   d) Mostrar precio por km (precio unitario)"
-				"\n   e) Mostrar diferencia de precio ingresada (Latam - Aerolìneas)");
-		printf("\n4. Informar Resultados");
-		printf("\n5. Carga forzada de datos");
-		printf("\n6. Salir");
-
+		MostrarMenu(kmIngresados, precioAerolineas, precioLatam);
 		opcion = PedirNumero("\n\nSeleccione una opcion: ", "Error, seleccione una opcion disponible: ", 1, 6);
 
 		switch(opcion)
 		{
 			case 1:
-				kmIngresados = PedirNumero("Ingresar kilòmetros: ", "Error, los kilòmetros deben estar dentro del rango (1-15000)", 1, 15000);
+				kmIngresados = PedirNumero("Ingresar kilòmetros: ", "Error, intentelo nuevamente (rango vàlido de KMs 1-15000):", 1, 15000);
 				break;
 			case 2:
-				precioVueloAerolineas = PedirNumero("Ingresar precio del vuelo Aerolineas: ", "Error, el precio debe estar dentro del rango (1-999999)", 1, 999999);
-				precioVueloLatam = PedirNumero("Ingresar precio del vuelo Latam: ", "Error, el precio debe estar dentro del rango (1-999999)", 1, 999999);
+				precioAerolineas = PedirNumero("Ingresar precio del vuelo Aerolineas: ", "Error, intentelo nuevamente (rango vàlido de precio 1-999999): ", 1, 999999);
+				precioLatam = PedirNumero("Ingresar precio del vuelo Latam: ", "Error, intentelo nuevamente (rango vàlido de precio 1-999999): ", 1, 999999);
 				break;
 			case 3:
-				//  Si falta ingresar los kilometros o el precio de alguna de las dos aerolineas NO se pueden realizar los calculos
-				if (kmIngresados == 0 || precioVueloAerolineas == 0 || precioVueloLatam == 0)
+				if (kmIngresados == 0 || precioAerolineas == 0 || precioLatam == 0)//  Si falta ingresar los kilometros o el precio de alguna de las dos aerolineas NO se pueden realizar los calculos
 				{
 					printf("Debe ingresar todos los datos (kilometros y precios de ambas aerolineas) para poder realizar los calculos.");
 				}
 				else
 				{
-					// Calcular costos Aerolineas
-					precioConDebito[0] = PagarConTarjetaDebito(precioVueloAerolineas);
-					precioConCredito[0] = PagarConTarjetaCredito(precioVueloAerolineas);
-					precioConBitcoin[0] = PagarConBitcoin(precioVueloAerolineas);
-					precioUnitario[0] = CalcularPrecioUnitario(kmIngresados, precioVueloAerolineas);
-					// Calcular costos Latam
-					precioConDebito[1] = PagarConTarjetaDebito(precioVueloLatam);
-					precioConCredito[1] = PagarConTarjetaCredito(precioVueloLatam);
-					precioConBitcoin[1] = PagarConBitcoin(precioVueloLatam);
-					precioUnitario[1] = CalcularPrecioUnitario(kmIngresados, precioVueloLatam);
-					// Calcular diferencia de precio
-					diferenciaDePrecio = CalcularDiferencia(precioVueloAerolineas, precioVueloLatam);
-
+					precioDebitoAerolineas = CalcularPrecioConDebito(precioAerolineas);
+					precioCreditoAerolineas = CalcularPrecioConCredito(precioAerolineas);
+					precioBitcoinAerolineas = CalcularPrecioConBitcoin(precioAerolineas);
+					precioUnitarioAerolineas = CalcularPrecioUnitario(kmIngresados, precioAerolineas);
+					precioDebitoLatam = CalcularPrecioConDebito(precioLatam);
+					precioCreditoLatam = CalcularPrecioConCredito(precioLatam);
+					precioBitcoinLatam = CalcularPrecioConBitcoin(precioLatam);
+					precioUnitarioLatam = CalcularPrecioUnitario(kmIngresados, precioLatam);
+					diferenciaDePrecio = CalcularDiferencia(precioAerolineas, precioLatam);
 					printf("\nCalculos realizados!!!\n");
 					flagCalcularCostos = 1;
 				}
@@ -93,41 +79,32 @@ int main(void)
 				}
 				else
 				{
-					// Resultados Latam
 					printf("KMs Ingresados: %.2f km", kmIngresados);
-					printf("\n\nPrecio Latam: $%.2f", precioVueloLatam);
-					MostrarResultados(precioConDebito[1], precioConCredito[1], precioConBitcoin[1], precioUnitario[1]);
-					// Resultados Aerolineas
-					printf("\nPrecio Aerolineas: $%.2f", precioVueloAerolineas);
-					MostrarResultados(precioConDebito[0], precioConCredito[0], precioConBitcoin[0], precioUnitario[0]);
-					// Diferencia de precios
+					printf("\n\nPrecio Latam: $%.2f", precioLatam);
+					MostrarResultados(precioDebitoLatam, precioCreditoLatam, precioBitcoinLatam, precioUnitarioLatam);
+					printf("\nPrecio Aerolineas: $%.2f", precioAerolineas);
+					MostrarResultados(precioDebitoAerolineas, precioCreditoAerolineas, precioBitcoinAerolineas, precioUnitarioAerolineas);
 					printf("\n\nLa diferencia de precio es: $ %.2f\n\n", diferenciaDePrecio);
 				}
 				break;
 			case 5:
-				// Calcular costos Aerolineas con carga forzada
-				precioConDebito[0] = PagarConTarjetaDebito(precioVueloAerolineasCargaForzada);
-				precioConCredito[0] = PagarConTarjetaCredito(precioVueloAerolineasCargaForzada);
-				precioConBitcoin[0] = PagarConBitcoin(precioVueloAerolineasCargaForzada);
-				precioUnitario[0] = CalcularPrecioUnitario(kmCargaForzada, precioVueloAerolineasCargaForzada);
-				// Calcular costos Latam con carga forzada
-				precioConDebito[1] = PagarConTarjetaDebito(precioVueloLatamCargaForzada);
-				precioConCredito[1] = PagarConTarjetaCredito(precioVueloLatamCargaForzada);
-				precioConBitcoin[1] = PagarConBitcoin(precioVueloLatamCargaForzada);
-				precioUnitario[1] = CalcularPrecioUnitario(kmCargaForzada, precioVueloLatamCargaForzada);
-				// Calcular diferencia de precio
-				diferenciaDePrecio = CalcularDiferencia(precioVueloAerolineasCargaForzada, precioVueloLatamCargaForzada);
-				// Resultados de Aerolineas con carga forzada
+				precioDebitoAerolineas = CalcularPrecioConDebito(precioAerolineasCargaForzada);
+				precioCreditoAerolineas = CalcularPrecioConCredito(precioAerolineasCargaForzada);
+				precioBitcoinAerolineas = CalcularPrecioConBitcoin(precioAerolineasCargaForzada);
+				precioUnitarioAerolineas = CalcularPrecioUnitario(kmCargaForzada, precioAerolineasCargaForzada);
+				precioDebitoLatam = CalcularPrecioConDebito(precioLatamCargaForzada);
+				precioCreditoLatam = CalcularPrecioConCredito(precioLatamCargaForzada);
+				precioBitcoinLatam = CalcularPrecioConBitcoin(precioLatamCargaForzada);
+				precioUnitarioLatam = CalcularPrecioUnitario(kmCargaForzada, precioLatamCargaForzada);
+				diferenciaDePrecio = CalcularDiferencia(precioAerolineasCargaForzada, precioLatamCargaForzada);
 				printf("KMs Ingresados: %.2f km", kmCargaForzada);
-				printf("\n\nPrecio Aerolineas: $%.2f", precioVueloAerolineasCargaForzada);
-				MostrarResultados(precioConDebito[0], precioConCredito[0], precioConBitcoin[0], precioUnitario[0]);
-				// Resultados de Latam con carga forzada
-				printf("\nPrecio Latam: $%.2f", precioVueloLatamCargaForzada);
-				MostrarResultados(precioConDebito[1],precioConCredito[1], precioConBitcoin[1], precioUnitario[1]);
-				// Diferencia de precios
+				printf("\n\nPrecio Aerolineas: $%.2f", precioAerolineasCargaForzada);
+				MostrarResultados(precioDebitoAerolineas, precioCreditoAerolineas, precioBitcoinAerolineas, precioUnitarioAerolineas);
+				printf("\nPrecio Latam: $%.2f", precioLatamCargaForzada);
+				MostrarResultados(precioDebitoLatam,precioCreditoLatam, precioBitcoinLatam, precioUnitarioLatam);
 				printf("\nLa diferencia de precio es: $%.2f\n", diferenciaDePrecio);
 				break;
-			default: //Opcion 6 -> Salir
+			default:
 				printf("Gracias por usar la aplicaciòn!!! Saludos.");
 				break;
 		}

@@ -1,5 +1,5 @@
 /*
- * MetodosDePago.c
+ * Calculos.c
 
  	 Fernàndez Juan Ignacio 1ºB
  	 Trabajo pràctico Nº1
@@ -7,7 +7,7 @@
 
 #include "Calculos.h"
 
-float PagarConTarjetaDebito(float precio)
+float CalcularPrecioConDebito(float precio)
 {
 	float precioTotal;
 
@@ -15,7 +15,7 @@ float PagarConTarjetaDebito(float precio)
 	return precioTotal;
 }
 
-float PagarConTarjetaCredito(float precio)
+float CalcularPrecioConCredito(float precio)
 {
 	float precioTotal;
 
@@ -23,7 +23,7 @@ float PagarConTarjetaCredito(float precio)
 	return precioTotal;
 }
 
-float PagarConBitcoin(float precio)
+float CalcularPrecioConBitcoin(float precio)
 {
 	float precioTotal;
 	float precioBitcoin;

@@ -19,4 +19,10 @@
 /// @param float Precio unitario
 void MostrarResultados(float, float, float, float);
 
+/// @brief Imprime el menu de opciones para el usuario
+///
+/// @param float Kilometros ingresados por el usuario
+/// @param float Precio del vuelo de Aerolineas ingresado por el usuario
+/// @param float Precio del vuelo de Latam ingresado por el usuario
+void MostrarMenu(float, float, float);
 #endif /* OUTPUT_H_ */

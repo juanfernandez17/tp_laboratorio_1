@@ -25,5 +25,3 @@ float PedirNumero(char mensaje[], char mensajeError[], int minimo, int maximo)
 	}
 	return numeroIngresado;
 }
-
-
