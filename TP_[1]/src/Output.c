@@ -12,7 +12,7 @@ void MostrarResultados(float precioConDebito, float precioConCredito, float prec
 	printf("\na) Precio con tarjeta de dèbito: $ %.2f"
 			"\nb) Precio con tarjeta de crèdito: $ %.2f"
 			"\nc) Precio pagando con bitcoin: $%.5f BTC"
-			"\nd) Mostrar precio unitario: $ %.2f\n", precioConDebito, precioConCredito, precioConBitcoin, precioUnitario);
+			"\nd) Precio unitario: $ %.2f\n", precioConDebito, precioConCredito, precioConBitcoin, precioUnitario);
 }
 
 void MostrarMenu(float kmIngresados, float precioAerolineas, float precioLatam)
