@@ -431,8 +431,6 @@ int printPassengers(ePassenger arrayPassengers[], int lenPassengers, eFlyCode ar
 	return error;
 }
 
-
-
 int sortPassengersByCode(ePassenger arrayPassengers[], int lenPassengers, int order, eFlyCode arrayFlyCodes[], int lenFlyCodes)
 {
 	int error;

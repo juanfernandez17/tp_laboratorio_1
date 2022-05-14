@@ -31,14 +31,16 @@ int main(void) {
 	int opcionDos;
 	int eliminarId;
 	int modificarId;
-	int flag;
+	int flagPasajeros;
+	int flagFlyCode;
 	float promedioPasajes;
 	int cantSuperiorPromedio;
 
 	initPassengers(arrayPassengers, TAM_P);
 	initFlyCode(arrayFlyCodes, TAM_F);
 
-	flag = 0;
+	flagPasajeros = 0;
+	flagFlyCode = 0;
 
 	do
 	{
@@ -47,19 +49,29 @@ int main(void) {
 		switch(opcion)
 		{
 			case 1:
-				retorno = PedirDatos(arrayPassengers, TAM_P, arrayFlyCodes, TAM_F);
-				if(retorno == -1)
+				if(flagFlyCode == 0)
 				{
-					printf("\nError, no se ha logrado dar de alta al pasajero en el sistema.");
+					printf("\nNo se puede cargar usuarios ya que no se ha ingresado ningun codigo de vuelo.\n"
+							"Ingrese un codigo con la opcion 6 primero"); // Si no hay ningun codigo de vuelo significa que no existen vuelos.
+																		//Por lo tanto no pueden existir pasajeros hasta que no exista un vuelo antes.
 				}
 				else
 				{
-					printf("\nSe ha dado de alta al pasajero!");
-					flag = flag + 1;
+					retorno = PedirDatos(arrayPassengers, TAM_P, arrayFlyCodes, TAM_F);
+					if(retorno == -1)
+					{
+						printf("\nError, no se ha logrado dar de alta al pasajero en el sistema.");
+					}
+					else
+					{
+
+						printf("\nSe ha dado de alta al pasajero!");
+						flagPasajeros = flagPasajeros + 1;
+					}
 				}
 				break;
 			case 2:
-				if(flag == 0)
+				if(flagPasajeros == 0)
 				{
 					printf("\nNo se puede acceder a esta opcion sin antes haber ingresado un pasajero.\n");
 				}
@@ -83,7 +95,7 @@ int main(void) {
 				}
 				break;
 			case 3:
-				if(flag == 0)
+				if(flagPasajeros == 0)
 				{
 					printf("\nNo se puede acceder a esta opcion sin antes haber ingresado un pasajero.\n");
 				}
@@ -100,7 +112,7 @@ int main(void) {
 							break;
 						case 0:
 							printf("\nSe ha dado de baja al pasajero del sistema!");
-							flag = flag - 1;
+							flagPasajeros = flagPasajeros - 1;
 							break;
 						default:
 							printf("\nNo se ha encontrado el ID");
@@ -109,7 +121,7 @@ int main(void) {
 				}
 				break;
 			case 4:
-				if(flag == 0)
+				if(flagPasajeros == 0)
 				{
 					printf("\nNo se puede acceder a esta opcion sin antes haber ingresado un pasajero.\n");
 				}
@@ -140,10 +152,11 @@ int main(void) {
 			case 5:
 				retorno = AltaForzadaPasajeros(arrayPassengers, TAM_P);
 				AltaForzadaCodigos(arrayFlyCodes, TAM_F);
+				flagFlyCode = flagFlyCode + 4;
 				if(retorno == 0)
 				{
 					printf("\nSe han cargado correctamente los pasajeros y codigos de vuelo.");
-					flag = flag + 5;
+					flagPasajeros = flagPasajeros + 5;
 				}
 				else
 				{
@@ -159,6 +172,7 @@ int main(void) {
 				else
 				{
 					printf("\nSe ha cargado del codigo de vuelo en el sistema.");
+					flagFlyCode = flagFlyCode + 1;
 				}
 				break;
 			default:

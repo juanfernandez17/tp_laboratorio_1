@@ -130,6 +130,7 @@ int AltaFlyCode(eFlyCode arrayFlyCodes[], int lenFlyCodes)
 
 	if(arrayFlyCodes != NULL && lenFlyCodes > 0)
 	{
+		printf("\nAclaracion: el codigo de vuelo es alfanumerico y debe contener 9 caracteres.\n");
 		error = 0;
 		indexLibre = findIsEmptyFlyCode(arrayFlyCodes, lenFlyCodes);
 		if(indexLibre != -1)
