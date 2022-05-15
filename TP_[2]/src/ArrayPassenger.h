@@ -126,7 +126,8 @@ int sortPassengers(ePassenger arrayPassengers[], int lenPassengers, int order);
 /// @brief Permite mostrar en pantalla los datos del pasajero que recibe por parametro
 ///
 /// @param ePassenger Recibe al pasajero del cual quiere mostrar la informacion
-void PrintOnePassenger(ePassenger Pasajero);
+/// @param eFlyCode Codigo del cual se imprimira el estado de vuelo
+void PrintOnePassenger(ePassenger Pasajero, eFlyCode FlyCode);
 
 /// @brief Imprime los datos de los pasajeros que se encuentran en el array que recibe como parametro
 ///
@@ -195,5 +196,12 @@ int SuperiorAlPromedio(ePassenger arrayPassengers[], int lenPassengers, float pr
 /// @return Retorna el promedio
 float CalcularPromedio(float acumulador, int contador);
 
+/// @brief Imprime la lista de pasajeros ordenara por codigo de vuelo y por estado de vuelo
+///
+/// @param ePassenger Lista de pasajeros que se imprimira
+/// @param int Longitud de la lista de pasajeros
+/// @param eFlyCode Lista de codigos de vuelo (solo se imprimiran aquellos que esten ACTIVOS)
+/// @param int Longitud de la lista de codigos de vuelo
+void printStatusActivo(ePassenger arrayPassengers[], int lenPassengers, eFlyCode arrayFlyCodes[], int lenFlyCodes);
 
 #endif /* ARRAYPASSENGER_H_ */

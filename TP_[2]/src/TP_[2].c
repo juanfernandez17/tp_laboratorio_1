@@ -18,6 +18,7 @@
 #define DESCENDENTE 0
 #define TRUE 1
 #define FALSE 2
+#define ACTIVO 1
 
 int main(void) {
 
@@ -138,8 +139,7 @@ int main(void) {
 							printf("\nCantidad de pasajeros que superan el promedio: %d", cantSuperiorPromedio);
 							break;
 						case 3:
-							sortPassengersByCode(arrayPassengers, TAM_P, ASCENDENTE, arrayFlyCodes, TAM_F);
-							printPassengers(arrayPassengers, TAM_P, arrayFlyCodes, TAM_F);
+							printStatusActivo(arrayPassengers, TAM_P, arrayFlyCodes, TAM_F);
 							break;
 						default:
 							printf("\nHa salido del menu de informes.\n");

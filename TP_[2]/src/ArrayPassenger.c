@@ -24,7 +24,9 @@
 #define PREMUIM 4
 #define ASCENDENTE 1
 #define DESCENDENTE 0
+#define ACTIVO 1
 #define TAM_F 50
+#define TAM_P 2000
 
 static int idIncremental = 1;
 static int ePassenger_ObtenerID(void);
@@ -188,7 +190,7 @@ int removePassengerById(ePassenger arrayPassengers[], int lenPassengers, int id)
 			{
 				if(arrayPassengers[i].isEmpty == FALSE && arrayPassengers[i].id == id)
 				{
-					PrintOnePassenger(arrayPassengers[i]);
+					printf("\nID: %d | %s, %s", arrayPassengers[i].id, arrayPassengers[i].lastName, arrayPassengers[i].name);
 					confirmarEliminacion = utn_ConfirmarAccion("\n\n¿Quiere eliminar a este pasajero? (si/no)\n", "Error, opcion no valida. Intentelo de nuevo (si/no)\n");
 					if(confirmarEliminacion == 1)
 					{
@@ -221,7 +223,6 @@ int modifyPassenger(ePassenger arrayPassengers[], int lenPassengers, eFlyCode ar
 			{
 				if(arrayPassengers[i].isEmpty == FALSE && arrayPassengers[i].id == id)
 				{
-					PrintOnePassenger(arrayPassengers[i]);
 					modify = modifyMenu(arrayPassengers[i], arrayFlyCodes, lenFlyCodes);
 				}
 			}
@@ -398,10 +399,11 @@ void ordenDescendente(ePassenger arrayPassengers[], int lenPassengers)
 	}
 }
 
-void PrintOnePassenger(ePassenger Pasajero)
+void PrintOnePassenger(ePassenger Pasajero, eFlyCode FlyCode)
 {
 	printf("\nID: %d | %s, %s | Price: %.2f | Fly code: %s ", Pasajero.id, Pasajero.lastName, Pasajero.name,
 	Pasajero.price, Pasajero.flycode);
+	ReemplazarStatusFlight(FlyCode.statusFlight);
 	ReemplazarTypePassenger(Pasajero.typePassenger);
 }
 
@@ -421,10 +423,7 @@ int printPassengers(ePassenger arrayPassengers[], int lenPassengers, eFlyCode ar
 				{
 					if(strcmp(arrayFlyCodes[i].flyCode, arrayPassengers[j].flycode) == 0)
 					{
-						printf("\nID: %d | %s, %s | Price: %.2f | Fly code: %s ",
-						arrayPassengers[j].id, arrayPassengers[j].lastName, arrayPassengers[j].name, arrayPassengers[j].price, arrayPassengers[j].flycode);
-						ReemplazarTypePassenger(arrayPassengers[j].typePassenger);
-						ReemplazarStatusFlight(arrayFlyCodes[i].statusFlight);
+						PrintOnePassenger(arrayPassengers[j], arrayFlyCodes[i]);
 					}
 				}
 			}
@@ -457,13 +456,13 @@ void ReemplazarStatusFlight(int estadoVuelo)
 	switch(estadoVuelo)
 	{
 	case 1:
-		printf("| Status flight: Activo");
+		printf("| Status flight: Activo ");
 		break;
 	case 2:
-		printf("| Status flight: Cancelado");
+		printf("| Status flight: Cancelado ");
 		break;
 	case 3:
-		printf("| Status flight: Demorado");
+		printf("| Status flight: Demorado ");
 		break;
 	}
 }
@@ -584,4 +583,29 @@ float CalcularPromedio(float acumulador, int contador)
 	resultado = acumulador / contador;
 
 	return resultado;
+}
+
+void printStatusActivo(ePassenger arrayPassengers[], int lenPassengers, eFlyCode arrayFlyCodes[], int lenFlyCodes)
+{
+	for(int i = 0; i < lenPassengers; i++)
+	{
+		if(arrayPassengers[i].isEmpty == FALSE)
+		{
+			for(int j = 0; j < lenFlyCodes; j++)
+			{
+				if(arrayFlyCodes[j].isEmpty == FALSE)
+				{
+					sortPassengersByCode(arrayPassengers, lenPassengers, ASCENDENTE, arrayFlyCodes, lenFlyCodes);
+					if(strcmp(arrayPassengers[i].flycode, arrayFlyCodes[j].flyCode) == 0)
+					{
+						if(arrayFlyCodes[j].statusFlight == ACTIVO)
+						{
+							PrintOnePassenger(arrayPassengers[i], arrayFlyCodes[j]);
+						}
+					}
+
+				}
+			}
+		}
+	}
 }
