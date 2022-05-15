@@ -58,7 +58,7 @@ int AltaForzadaPasajeros(ePassenger arrayPassengers[], int lenPassengers)
 	ePassenger auxiliarPassengers[5] = {{1100, "Joaquin", "Acosta", 500, "ABCD00100", EJECUTIVO, FALSE},
 										{1101, "Lucas", "Perez", 650, "ABCD00101", EJECUTIVO, FALSE},
 										{1102, "Florencia", "Lagos", 400, "ABCD00101", TURISTA, FALSE},
-										{1103, "Aixa", "Medrano", 700, "ABCD00102", TURISTA, FALSE},
+										{1103, "Aixa", "Gomez", 700, "ABCD00102", TURISTA, FALSE},
 										{1104, "Marcos", "Gomez", 400, "ABCD00103", PRIMERA_CLASE, FALSE}};
 
 	if(arrayPassengers != NULL && lenPassengers > 0)
@@ -304,7 +304,6 @@ int modifyMenu(ePassenger passenger, eFlyCode arrayFlyCodes[], int lenFlyCodes)
 	return modify;
 }
 
-
 int sortPassengers(ePassenger arrayPassengers[], int lenPassengers, int order)
 {
 	int error;
@@ -401,8 +400,9 @@ void ordenDescendente(ePassenger arrayPassengers[], int lenPassengers)
 
 void PrintOnePassenger(ePassenger Pasajero)
 {
-	printf("\nID: %d | %s, %s | Price: %.2f | Fly code: %s | Type passenger: %d", Pasajero.id, Pasajero.lastName, Pasajero.name,
-	Pasajero.price, Pasajero.flycode, Pasajero.typePassenger);
+	printf("\nID: %d | %s, %s | Price: %.2f | Fly code: %s ", Pasajero.id, Pasajero.lastName, Pasajero.name,
+	Pasajero.price, Pasajero.flycode);
+	ReemplazarTypePassenger(Pasajero.typePassenger);
 }
 
 int printPassengers(ePassenger arrayPassengers[], int lenPassengers, eFlyCode arrayFlyCodes[], int lenFlyCodes)
@@ -421,14 +421,51 @@ int printPassengers(ePassenger arrayPassengers[], int lenPassengers, eFlyCode ar
 				{
 					if(strcmp(arrayFlyCodes[i].flyCode, arrayPassengers[j].flycode) == 0)
 					{
-						printf("\nID: %d | %s, %s | Price: %.2f | Fly code: %s | Type passenger: %d | Status flight: %d",
-						arrayPassengers[j].id, arrayPassengers[j].lastName, arrayPassengers[j].name, arrayPassengers[j].price, arrayPassengers[j].flycode ,arrayPassengers[j].typePassenger, arrayFlyCodes[i].statusFlight);
+						printf("\nID: %d | %s, %s | Price: %.2f | Fly code: %s ",
+						arrayPassengers[j].id, arrayPassengers[j].lastName, arrayPassengers[j].name, arrayPassengers[j].price, arrayPassengers[j].flycode);
+						ReemplazarTypePassenger(arrayPassengers[j].typePassenger);
+						ReemplazarStatusFlight(arrayFlyCodes[i].statusFlight);
 					}
 				}
 			}
 		}
 	}
 	return error;
+}
+
+void ReemplazarTypePassenger(int tipoPasajero)
+{
+	switch(tipoPasajero)
+	{
+	case 1:
+		printf("| Type passenger: Turista ");
+		break;
+	case 2:
+		printf("| Type passenger: Primera clase ");
+		break;
+	case 3:
+		printf("| Type passenger: Ejecutivo ");
+		break;
+	case 4:
+		printf("| Type passenger: Premium ");
+		break;
+	}
+}
+
+void ReemplazarStatusFlight(int estadoVuelo)
+{
+	switch(estadoVuelo)
+	{
+	case 1:
+		printf("| Status flight: Activo");
+		break;
+	case 2:
+		printf("| Status flight: Cancelado");
+		break;
+	case 3:
+		printf("| Status flight: Demorado");
+		break;
+	}
 }
 
 int sortPassengersByCode(ePassenger arrayPassengers[], int lenPassengers, int order, eFlyCode arrayFlyCodes[], int lenFlyCodes)

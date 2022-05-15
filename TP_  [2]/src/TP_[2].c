@@ -7,13 +7,12 @@
 #include <string.h>
 #include <ctype.h>
 
-
 #include "Input.h"
 #include "ArrayPassenger.h"
 #include "ArrayFlyCode.h"
 #include "Menu.h"
 
-#define TAM_P 50
+#define TAM_P 2000
 #define TAM_F 50
 #define ASCENDENTE 1
 #define DESCENDENTE 0
@@ -64,7 +63,6 @@ int main(void) {
 					}
 					else
 					{
-
 						printf("\nSe ha dado de alta al pasajero!");
 						flagPasajeros = flagPasajeros + 1;
 					}
@@ -150,8 +148,8 @@ int main(void) {
 				}
 				break;
 			case 5:
-				retorno = AltaForzadaPasajeros(arrayPassengers, TAM_P);
 				AltaForzadaCodigos(arrayFlyCodes, TAM_F);
+				retorno = AltaForzadaPasajeros(arrayPassengers, TAM_P);
 				flagFlyCode = flagFlyCode + 4;
 				if(retorno == 0)
 				{
@@ -176,7 +174,7 @@ int main(void) {
 				}
 				break;
 			default:
-				printf("\nSaludos!");
+				printf("\nSaliò del programa. Saludos!");
 				break;
 		}
 	} while(opcion != 7);

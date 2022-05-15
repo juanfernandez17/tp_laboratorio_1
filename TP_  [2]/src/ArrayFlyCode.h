@@ -24,7 +24,6 @@ typedef struct
 /// 			Retorna [0] en caso de que se hayan inicializado todas las posiciones del array en TRUE
 int initFlyCode(eFlyCode arrayFlyCodes[], int lenFlyCodes);
 
-
 /// @brief Esta funcion permite cargar de manera forzada una determinada cantidad de codigos de vuelos junto con su estado
 ///
 /// @param int Array de flyCodes donde se guardaran los codigos de vuelo y estados de los mismos
@@ -42,7 +41,6 @@ int AltaForzadaCodigos(eFlyCode arrayFlyCodes[], int lenFlyCodes);
 /// 			Retorna [0] en caso de que si se haya encontrado el codigo de vuelo
 int findFlyCode(eFlyCode arrayFlyCodes[], int lenFlyCodes, char flyCode[]);
 
-
 /// @brief Permite mostrarle al usuario un codigo de vuelo junto con su estado
 ///
 /// @param eFlyCode Recibe el codigo de vuelo que se quiere mostrar al usuario
@@ -55,14 +53,6 @@ void printOneFlyCode(eFlyCode flyCode);
 /// @return Retorna [-1] en caso de que el array apunte a NULL o la longitud sea 0.
 /// 		Retorna [0] en caso de que se haya logrado imprimir en pantalla toda la lista de codigos de vuelo
 int printFlyCode(eFlyCode arrayFlyCodes[], int lenFlyCodes);
-
-
-/// @brief Permite encontrar la primer posicion libre (isEmpty = TRUE) del array que recibe como parametro
-///
-/// @param ePassenger Recibe el array de pasajeros del cual se buscara la primer posicion libre
-/// @param int Recibe la longitud del array que contiene a los pasajeros
-/// @return int Retorna [-1] en caso de error (longitud menor a 0 o que se apunte a NULL) o que no se haya encontrado
-/// 		ninguna posicion libre en el array - Retorna [i] que seria la primer posicion que encuentra en el array
 
 /// @brief Permite encontrar la primer posicion libre (isEmpty = TRUE) del array que recibe como parametro
 ///

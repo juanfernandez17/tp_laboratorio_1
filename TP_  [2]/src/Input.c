@@ -134,30 +134,29 @@ int utn_getString(char *pResultado, char mensaje[], char mensajeError[], int TAM
 int utn_VerificarString(char cadena[], int lenCadena, char minimo, char maximo)
 {
 	int validez;
+	int contadorEspacios;
 	char charNoValidos[7] = {'[',']','\\','^','_','`'};
 
-	validez = 1;
+	validez = -1;
+	contadorEspacios = 0;
 
 	for(int i = 0; i < lenCadena; i++)
 	{
-		for(int j = 0; j < 7; j++)
+		if(cadena[i] == ' ')
 		{
-			if(cadena[i] == ' ')
+			contadorEspacios++;
+		}
+		if(cadena[i] < minimo || cadena[i] > maximo || contadorEspacios > 1)
+		{
+			validez = -1;
+		}
+		else
+		{
+			for(int j = 0; j < 7; j++)
 			{
-				validez = 1;
-			}
-			else
-			{
-				if(cadena[i] == charNoValidos[j])
+				if(cadena[i] != charNoValidos[j])
 				{
-					validez = -1;
-				}
-				else
-				{
-					if(cadena[i] < minimo || cadena[i] > maximo)
-					{
-						validez = -1;
-					}
+					validez = 1;
 				}
 			}
 		}

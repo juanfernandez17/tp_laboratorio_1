@@ -15,7 +15,6 @@
 
 #define TRUE 1
 #define FALSE 2
-#define PEPE 3
 #define ACTIVO 1
 #define CANCELADO 2
 #define DEMORADO 3
@@ -23,7 +22,6 @@
 #define TOUPPER 1
 #define ASCENDENTE 1
 #define DESCENDENTE 0
-
 
 int initFlyCode(eFlyCode arrayFlyCodes[], int lenFlyCodes)
 {
@@ -48,7 +46,7 @@ int AltaForzadaCodigos(eFlyCode arrayFlyCodes[], int lenFlyCodes)
 	int retorno;
 	retorno = -1;
 
-	eFlyCode auxiliarFlyCodes[4] = {{"ABCD00100", ACTIVO, FALSE},{"ABCD00101", CANCELADO, FALSE},{"ABCD00103", DEMORADO, FALSE}, {"ABCD00104", ACTIVO, FALSE}};
+	eFlyCode auxiliarFlyCodes[4] = {{"ABCD00100", ACTIVO, FALSE},{"ABCD00101", CANCELADO, FALSE},{"ABCD00102", DEMORADO, FALSE}, {"ABCD00103", ACTIVO, FALSE}};
 
 	if(arrayFlyCodes != NULL && lenFlyCodes >= 0)
 	{

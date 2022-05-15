@@ -138,6 +138,18 @@ void PrintOnePassenger(ePassenger Pasajero);
 ///			Retorna [0] en caso de que se hayan mostrado correctamente los datos del array
 int printPassengers(ePassenger arrayPassengers[], int lenPassengers, eFlyCode arrayFlyCodes[], int lenFlyCodes);
 
+/// @brief Imprime el tipo de pasajero reemplazando el int (1, 2, 3 o 4) por su significado en string (turista, primera
+/// 		clase, ejecutivo  o premium
+///
+/// @param int Recibe el tipo de pasajero
+void ReemplazarTypePassenger(int tipoPasajero);
+
+/// @brief Imprime el estado de vuelo pero reemplazando el valor de int (1, 2 o 3) por su significado en string
+/// 	(ACTIVO, CANCELADO o DEMORADO)
+///
+/// @param int Estado de vuelo que se reemplazara por string
+void ReemplazarStatusFlight(int estadoVuelo);
+
 /// @brief Ordena la lista de pasajeros segun el codigo de vuelo y luego por el estado de manera ascendente o descendente
 ///
 /// @param ePassenger Lista de pasajeros la cual se ordenara segun el criterio recibido (ascendente o descendente)
@@ -182,5 +194,6 @@ int SuperiorAlPromedio(ePassenger arrayPassengers[], int lenPassengers, float pr
 /// @param int Contador que se utilizara para dividir al acumulador
 /// @return Retorna el promedio
 float CalcularPromedio(float acumulador, int contador);
+
 
 #endif /* ARRAYPASSENGER_H_ */
