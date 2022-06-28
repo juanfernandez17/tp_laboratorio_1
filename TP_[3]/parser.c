@@ -57,6 +57,7 @@ int parser_PassengerFromBinary(FILE* pFile , LinkedList* pArrayListPassenger)
 	int error;
 	Passenger* unPasajero;
 	error = -1;
+	int retornoFread;
 
 	if(pFile != NULL && pArrayListPassenger != NULL)
 	{
@@ -66,8 +67,11 @@ int parser_PassengerFromBinary(FILE* pFile , LinkedList* pArrayListPassenger)
 
 			if(unPasajero != NULL)
 			{
-				fread(unPasajero,sizeof(Passenger), 1,pFile);
-				ll_add(pArrayListPassenger, unPasajero);
+				retornoFread = fread(unPasajero,sizeof(Passenger), 1,pFile);
+				if(retornoFread == 1)
+				{
+					ll_add(pArrayListPassenger, unPasajero);
+				}
 			}
 		}
 		error = 1;

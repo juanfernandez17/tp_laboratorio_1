@@ -273,4 +273,22 @@ void Passenger_FormatearString(char cadena[], int lenCadena, int opcion);
 /// @param lenCadena int Longitud de la cadena
 void Passenger_DarFormatoNombre(char cadena[], int lenCadena);
 
+/// @brief  Guarda en el archivo recibido el ultimo id generado
+/// @param ruta al archivo donde se guardara el ultimo id
+/// @param direccion donde se encuentra el valor del ultimo id registrado
+/// @return retorna [-1] en caso de error (path o lastId apuntando a NULL)
+///			retorna [1] en caso de exito y haber guardado el ultimo id en el archivo
+int Passenger_setLastId(char* path, int* lastId);
+
+/// @brief Abre el archivo que contiene el ultimo id registrado y lo asigna a lastId
+/// @param ruta al archivo donde se encuentra almacenado el ultimo id registrado
+/// @param direccion de memoria al que se le asignara el ultimo id
+/// @return retorna [-1] en caso de error (path o lastId apuntando a NULL)
+///		   retorna [0] en caso de haber obtenido el ultimo id correctamente
+int Passenger_getLastId(char* path, int* lastId);
+
+/// @brief Utiliza las funcione setLastId y getLastId para obtener y guardar los ultimos id registrados
+/// @return Retorna el ultimo id que se encuentra guardado en el archivo +1
+int Passenger_generarId();
+
 #endif /* PASSENGER_H_ */

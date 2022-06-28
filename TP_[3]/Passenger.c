@@ -311,21 +311,6 @@ int Passenger_ValidarPrecio(char* precio)
 	return valido;
 }
 
-static int idIncrementalInicial = 1; // Se usa en caso de que no se haya cargado un archivo
-static int idIncremental = 1001; // Se usa en caso de que se haya cargado el archivo
-static int Passenger_ObtenerID(int);
-static int Passenger_ObtenerID(int lenLista)
-{
-	if(lenLista == 0)
-	{
-		return idIncrementalInicial++;
-	}
-	else
-	{
-		return idIncremental++;
-	}
-}
-
 int Passenger_PedirDatos(	char* idStr, char* nombreStr, char* apellidoStr, char* precioStr, char* tipoPasajeroStr, char* codigoVueloStr, TypePassenger* listaTiposPasajeros,
 							int lenTiposPasajeros,FlyCode* listaFlyCodes, int lenFlyCodes, int lenLista)
 {
@@ -340,7 +325,7 @@ int Passenger_PedirDatos(	char* idStr, char* nombreStr, char* apellidoStr, char*
 
 	if(idStr != NULL && nombreStr != NULL && apellidoStr != NULL && precioStr != NULL && tipoPasajeroStr != NULL && codigoVueloStr != NULL)
 	{
-		getId = Passenger_ObtenerID(lenLista);
+		getId = Passenger_generarId();
 		sprintf(idStr, "%d", getId);
 
 		utn_getString(nombreStr, "Nombre: ", "Error, intentelo de nuevo: ", 20);
@@ -701,3 +686,55 @@ void Passenger_DarFormatoNombre(char cadena[], int lenCadena)
 	}
 }
 
+int Passenger_getLastId(char* path, int* lastId)
+{
+	int returnAux;
+	FILE* pArchivo;
+	returnAux = -1;
+
+	if(path != NULL && lastId != NULL)
+	{
+		pArchivo = fopen(path, "rb");
+
+		if(pArchivo != NULL)
+		{
+			while(!feof(pArchivo))
+			{
+				fread(lastId, sizeof(int), 1, pArchivo);
+				fclose(pArchivo);
+			}
+			returnAux = 0;
+		}
+	}
+	return returnAux;
+}
+
+int Passenger_setLastId(char* path, int* lastId)
+{
+	int returnAux;
+	FILE* pArchivo;
+	returnAux = -1;
+
+	if(path != NULL && lastId != NULL)
+	{
+		pArchivo = fopen(path, "wb");
+
+		if(pArchivo != NULL)
+		{
+			fwrite(lastId, sizeof(int),1, pArchivo);
+			fclose(pArchivo);
+			returnAux = 0;
+		}
+	}
+	return returnAux;
+}
+
+int Passenger_generarId()
+{
+	int lastId = 1000;
+	Passenger_getLastId("lastId.Bin", &lastId);
+	lastId++;
+	Passenger_setLastId("lastId.Bin", &lastId);
+
+	return lastId;
+}

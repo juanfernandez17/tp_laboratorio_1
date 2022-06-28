@@ -226,7 +226,7 @@ int utn_getNumeroFloat(float *pResultado, char mensaje[], char mensajeError[], f
 	return retorno;
 }
 
-static int esCaracter(char caracter)
+int esCaracter(char caracter)
 {
 	int retorno;
 	char caracteresNoValidos[7] = {'[','\\',']','`','^','_'};

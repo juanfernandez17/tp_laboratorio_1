@@ -33,10 +33,12 @@ int main()
     int saveAsBin;
     int returnModify;
     int returnRemove;
+    int cantPasajeros;
 
     LinkedList* listaPasajeros = ll_newLinkedList();
     loadTxt = 0;
     loadBin = 0;
+    cantPasajeros = 0;
 
     do{
     	utn_getNumero(&option, "\n********** MENU DE OPCIONES **********\n\n"
@@ -60,6 +62,7 @@ int main()
             		if(loadTxt == 1)
             		{
             			printf("\nSe cargo el archivo de texto correctamente!");
+            			cantPasajeros += 1000;
             		}
             	}
             	else
@@ -74,6 +77,7 @@ int main()
             		if(loadBin == 1)
 					{
 						printf("\nSe cargo el archivo binario correctamente!");
+						cantPasajeros += 1000;
 					}
             	}
             	else
@@ -82,24 +86,36 @@ int main()
             	}
             	break;
             case 3:
-            		controller_addPassenger(listaPasajeros);
+            		if(controller_addPassenger(listaPasajeros) == 1)
+            		{
+            			cantPasajeros++;
+            		}
             	break;
             case 4:
-            		returnModify = controller_editPassenger(listaPasajeros);
-            		switch(returnModify)
+            		if(cantPasajeros != 0)
             		{
-            		case 1:
-            			printf("\nSe completo la modificacion correctamente!");
-            			break;
-            		case 0:
-            			printf("\nNo existe un pasajero con el ID ingresado!");
-            			break;
-            		default:
-            			printf("\nError...");
-            			break;
+            			returnModify = controller_editPassenger(listaPasajeros);
+						switch(returnModify)
+						{
+						case 1:
+							printf("\nSe completo la modificacion correctamente!");
+							break;
+						case 0:
+							printf("\nNo existe un pasajero con el ID ingresado!");
+							break;
+						default:
+							printf("\nError...");
+							break;
+						}
+            		}
+            		else
+            		{
+            			printf("\nNo se puede acceder al menu de modificaciones si no hay pasajeros cargados previamente!");
             		}
 				break;
 			case 5:
+				if(cantPasajeros != 0)
+				{
 					returnRemove = controller_removePassenger(listaPasajeros);
 					if(returnRemove == -1)
 					{
@@ -111,13 +127,38 @@ int main()
 						{
 							printf("\nNo existe un pasajero con el ID ingresado!");
 						}
+						else
+						{
+							printf("\nSe dio de baja al pasajero!");
+							cantPasajeros--;
+						}
 					}
+				}
+				else
+				{
+					printf("\nNo se puede dar de baja un pasajero si no hay pasajeros cargados previamente!");
+				}
 				break;
 			case 6:
+				if(cantPasajeros != 0)
+				{
 					controller_ListPassenger(listaPasajeros);
+				}
+				else
+				{
+					printf("\nNo se puede listar los pasajeros si no hay pasajeros cargados previamente!");
+				}
+
 				break;
 			case 7:
+				if(cantPasajeros != 0)
+				{
 					controller_sortPassenger(listaPasajeros);
+				}
+				else
+				{
+					printf("\nNo se puede acceder al submenu para ordernar los pasajeros si no hay pasajeros cargados previamente!");
+				}
 				break;
 			case 8:
 				if(loadBin != 1 && loadTxt != 1)

@@ -86,4 +86,11 @@ int esNumerica(char* cadena, int limite);
 /// @return int Retorna [0] en caso de que no sea un numero flotante - Retorna [1] en caso de que si sea un numero flotante
 int esFlotante(char* cadena, int limite);
 
+/// @brief Verificar que el caracter recibido sea una letra de la A a la z
+///
+/// @param caracter Caracter a analizar
+/// @return retorna 0 en caso de que el caracter sea invalido (algun caracter especial o numero)
+/// 		retorna 1 en caso de que el caracter sea una letra
+int esCaracter(char caracter);
+
 #endif /* UTN_H_ */

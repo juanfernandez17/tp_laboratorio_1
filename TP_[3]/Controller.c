@@ -8,26 +8,7 @@
 #define TAM_TYPEPASSENGER 3
 #define TAM_FLYCODE 8
 
-/* Nota respecto a la creacion e inicializacion repetida de las lista "listaTiposPasajeros" y "listaFlyCodes":
- *
- * Estas listas contienen los tipos de pasajeros y codigos de vuelo (junto al estado de dicho vuelo) respectivamente.
- * Son estructuraras que agregue y relacione a la estructura principal Passenger (como ya habia hecho en el tp2).
- *
- * Queria crear las listas en el main y pasarselas por parametro a las funciones "controller_" que necesitaran
- * de estas listas, pero al preguntarle a mi docente me dijo que era mejor no tocar los parametros de dichas funciones.
- *
- * Por este motivo, cuando necesito estas listas (por ejemplo, cuando quiero imprimir un pasajero o cuando quiero
- * agregar un pasajero y le tengo que mostrar al usuario los tipos de pasajero que existen y los codigos de vuelo para que
- * seleccione el suyo, entre otras) las tengo que crear e inicializar en la funcion "controller_" en la cual las necesito.
- *
- */
-/** \brief Carga los datos de los pasajeros desde el archivo data.csv (modo texto).
- *
- * \param path char*
- * \param pArrayListPassenger LinkedList*
- * \return 	int [-1] en caso de que path o pArrayListPassenger sea igual a NULL
- *			int [1] en caso de cargar los datos del archivo de texto de manera exitosa
- */
+
 int controller_loadFromText(char* path , LinkedList* pArrayListPassenger)
 {
 	int error;
@@ -141,7 +122,10 @@ int controller_ListPassenger(LinkedList* pArrayListPassenger)
 		for(int i = 0; i < lenLista; i++)
 		{
 			unPasajero = (Passenger*) ll_get(pArrayListPassenger, i);
-			Passenger_PrintOne(unPasajero, listaTiposPasajeros, TAM_TYPEPASSENGER, listaFlyCodes, TAM_FLYCODE);
+			if(unPasajero != NULL)
+			{
+				Passenger_PrintOne(unPasajero, listaTiposPasajeros, TAM_TYPEPASSENGER, listaFlyCodes, TAM_FLYCODE);
+			}
 		}
 		error = 1;
 	}
@@ -154,6 +138,7 @@ int controller_ListPassenger(LinkedList* pArrayListPassenger)
  * 			int [0] en caso de no encontrar un pasajero con el ID ingresado
  *			int [1] en caso de encontrar un pasajero con el ID ingresado
  */
+/*
 int controller_editPassenger(LinkedList* pArrayListPassenger)
 {
 	int error;
@@ -198,8 +183,54 @@ int controller_editPassenger(LinkedList* pArrayListPassenger)
 		}
 	}
     return error;
-}
+}*/
 
+int controller_editPassenger(LinkedList* pArrayListPassenger)
+{
+	int error;
+	int idModify;
+	int lenLista;
+	int idMayor;
+	int idPassenger;
+	Passenger* passengerConIdMayor;
+	Passenger* unPasajero;
+	TypePassenger listaTiposPasajeros[TAM_TYPEPASSENGER];
+	FlyCode listaFlyCodes[TAM_FLYCODE];
+
+	TypePassenger_init(listaTiposPasajeros, TAM_TYPEPASSENGER);
+	FlyCode_init(listaFlyCodes, TAM_FLYCODE);
+	error = -1;
+	lenLista = ll_len(pArrayListPassenger);
+	passengerConIdMayor = (Passenger*) ll_get(pArrayListPassenger, lenLista - 1);
+	Passenger_getId(passengerConIdMayor, &idMayor);
+
+	if(pArrayListPassenger != NULL)
+	{
+		error = 0;
+		controller_ListPassenger(pArrayListPassenger);
+		utn_getNumeroConIntentos(&idModify, "\n\nID del pasajero a modificar: ", "Error, ID fuera de rango. Intentelo de nuevo: \n", 1, idMayor, 5);
+
+		for(int i = 0; i < lenLista; i++)
+		{
+			unPasajero = (Passenger*)ll_get(pArrayListPassenger, i);
+			Passenger_getId(unPasajero, &idPassenger);
+
+			if(idPassenger == idModify)
+			{
+				unPasajero = (Passenger*) ll_get(pArrayListPassenger, i);
+				if(unPasajero != NULL)
+				{
+					printf("\nPasajero a modificar: \n");
+					Passenger_PrintOne(unPasajero, listaTiposPasajeros, TAM_TYPEPASSENGER, listaFlyCodes, TAM_FLYCODE);
+					Passenger_Modificar(unPasajero, listaTiposPasajeros, TAM_TYPEPASSENGER, listaFlyCodes, TAM_FLYCODE);
+					error = 1;
+					break;
+				}
+			}
+		}
+	}
+    return error;
+}
 /** \brief Baja de pasajero
  *
  * \param pArrayListPassenger LinkedList*
@@ -237,17 +268,12 @@ int controller_removePassenger(LinkedList* pArrayListPassenger)
 
 			if(idPassenger == idRemove)
 			{
-				error = 1;
+
 				Passenger_PrintOne(unPasajero, listaTiposPasajeros, TAM_TYPEPASSENGER, listaFlyCodes, TAM_FLYCODE);
 				if(utn_ConfirmarAccion("¿Desea remover de la lista a este pasajero? (si/no): ", "Error, opcion no disponible. Intentelo de nuevo (si/no): "))
 				{
 					ll_remove(pArrayListPassenger, i);
-					printf("\nSe ha dado de baja al pasajero!");
-					break;
-				}
-				else
-				{
-					printf("\nSe ha cancelado la baja del pasajero!");
+					error = 1;
 					break;
 				}
 			}
@@ -267,10 +293,13 @@ int controller_sortPassenger(LinkedList* pArrayListPassenger)
 	int error;
 	int criterioOrdenamiento;
 	int orden;
+	LinkedList* cloneList;
 	error = -1;
 
 	if(pArrayListPassenger != NULL)
 	{
+		cloneList = ll_clone(pArrayListPassenger);
+
 		utn_getNumero(&criterioOrdenamiento, "******** CRITERIOS DE ORDENAMIENTO ********\n\n"
 				"1. Nombre\n"
 				"2. Apellido\n"
@@ -291,22 +320,22 @@ int controller_sortPassenger(LinkedList* pArrayListPassenger)
 			switch(criterioOrdenamiento)
 			{
 				case 1:
-					ll_sort(pArrayListPassenger, Passenger_CompareByName, orden);
+					ll_sort(cloneList, Passenger_CompareByName, orden);
 					break;
 				case 2:
-					ll_sort(pArrayListPassenger, Passenger_CompareByLastName, orden);
+					ll_sort(cloneList, Passenger_CompareByLastName, orden);
 					break;
 				case 3:
-					ll_sort(pArrayListPassenger, Passenger_CompareById, orden);
+					ll_sort(cloneList, Passenger_CompareById, orden);
 					break;
 				case 4:
-					ll_sort(pArrayListPassenger, Passenger_CompareByPrice, orden);
+					ll_sort(cloneList, Passenger_CompareByPrice, orden);
 					break;
 				case 5:
-					ll_sort(pArrayListPassenger, Passenger_CompareByTypePassenger, orden);
+					ll_sort(cloneList, Passenger_CompareByTypePassenger, orden);
 					break;
 				default:
-					ll_sort(pArrayListPassenger, Passenger_CompareByFlyCode, orden);
+					ll_sort(cloneList, Passenger_CompareByFlyCode, orden);
 					break;
 			}
 			break;
@@ -314,27 +343,27 @@ int controller_sortPassenger(LinkedList* pArrayListPassenger)
 			switch(criterioOrdenamiento)
 			{
 				case 1:
-					ll_sort(pArrayListPassenger, Passenger_CompareByName, orden);
+					ll_sort(cloneList, Passenger_CompareByName, orden);
 					break;
 				case 2:
-					ll_sort(pArrayListPassenger, Passenger_CompareByLastName, orden);
+					ll_sort(cloneList, Passenger_CompareByLastName, orden);
 					break;
 				case 3:
-					ll_sort(pArrayListPassenger, Passenger_CompareById, orden);
+					ll_sort(cloneList, Passenger_CompareById, orden);
 					break;
 				case 4:
-					ll_sort(pArrayListPassenger, Passenger_CompareByPrice, orden);
+					ll_sort(cloneList, Passenger_CompareByPrice, orden);
 					break;
 				case 5:
-					ll_sort(pArrayListPassenger, Passenger_CompareByTypePassenger, orden);
+					ll_sort(cloneList, Passenger_CompareByTypePassenger, orden);
 					break;
 				default:
-					ll_sort(pArrayListPassenger, Passenger_CompareByFlyCode, orden);
+					ll_sort(cloneList, Passenger_CompareByFlyCode, orden);
 					break;
 			}
 			break;
 		}
-		controller_ListPassenger(pArrayListPassenger);
+		controller_ListPassenger(cloneList);
 		error = 1;
 	}
     return error;
