@@ -1,213 +1,203 @@
 /*
-	ArrayFlyCode.c
-
-	Fernàndez Juan Ignacio 1ºB
-	Trabajo pràctico Nº2
-*/
-
-#include <stdio_ext.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
+ * ArrayFlyCode.c
+ *
+ *  Created on: 25 jun. 2022
+ *      Author: juan
+ */
 
 #include "ArrayFlyCode.h"
-#include "Input.h"
+#include "utn.h"
+#include <stdio.h>
+#include <string.h>
 
 #define TRUE 1
-#define FALSE 2
-#define ACTIVO 1
-#define CANCELADO 2
-#define DEMORADO 3
-#define TOLOWER 0
-#define TOUPPER 1
-#define ASCENDENTE 1
-#define DESCENDENTE 0
+#define FALSE 0
 
-int initFlyCode(eFlyCode arrayFlyCodes[], int lenFlyCodes)
+int FlyCode_init(FlyCode* list, int len)
 {
-	int error;
+	int returnAux;
+	returnAux = -1;
 
-	error = -1;
-
-	if(arrayFlyCodes != NULL && lenFlyCodes >= 0)
+	if(list != NULL && len > 0)
 	{
-		error = 0;
-
-		for(int i = 0; i < lenFlyCodes; i ++)
+		for(int i = 0; i < len; i++)
 		{
-			arrayFlyCodes[i].isEmpty = TRUE;
+			list[i].isEmpty = TRUE;
 		}
+		returnAux = 0;
 	}
-	return error;
+	return returnAux;
 }
 
-int AltaForzadaCodigos(eFlyCode arrayFlyCodes[], int lenFlyCodes)
+int FlyCode_CargaForzada(FlyCode* list, int len)
 {
-	int retorno;
-	retorno = -1;
-
-	eFlyCode auxiliarFlyCodes[4] = {{"ABCD00100", ACTIVO, FALSE},{"ABCD00101", CANCELADO, FALSE},{"ABCD00102", DEMORADO, FALSE}, {"ABCD00103", ACTIVO, FALSE}};
-
-	if(arrayFlyCodes != NULL && lenFlyCodes >= 0)
+	int returnAux;
+	FlyCode auxiliarList[4] = {	{1,"ABCD00101", "Activo", FALSE},{2,"ABCD00102", "Demorado", FALSE},
+								{3,"ABCD00103", "Aterrizado", FALSE},{4,"ABCD00104", "Cancelado", FALSE}};;
+	if(list != NULL && len > 0)
 	{
 		for(int i = 0; i < 4; i++)
 		{
-			arrayFlyCodes[i] = auxiliarFlyCodes[i];
+			list[i] = auxiliarList[i];
 		}
-		retorno = 0;
+		returnAux = -1;
 	}
-	return retorno;
+	return returnAux;
 }
 
-int findFlyCode(eFlyCode arrayFlyCodes[], int lenFlyCodes, char flyCode[])
+void FlyCode_printOne(FlyCode codigoVuelo)
 {
-	int retorno;
-	retorno = -1;
+	printf("\n%d. %s | %s", codigoVuelo.idFlyCode, codigoVuelo.codigoVueloStr, codigoVuelo.estadoVueloStr);
+}
 
-	for(int i = 0; i < lenFlyCodes; i++)
+int FlyCode_printFlyCodes(FlyCode* list, int len)
+{
+	int returnAux;
+	returnAux = -1;
+
+	if(list != NULL && len > 0)
 	{
-		if(strcmp(arrayFlyCodes[i].flyCode, flyCode) == 0)
+		for(int i = 0; i < len; i++)
 		{
-			retorno = 0;
-		}
-	}
-	return retorno;
-}
-
-void printOneFlyCode(eFlyCode flyCode)
-{
-	printf("\nCodigo: %s | Estado: %d\n", flyCode.flyCode, flyCode.statusFlight);
-}
-
-int printFlyCode(eFlyCode arrayFlyCodes[], int lenFlyCodes)
-{
-	int error;
-
-	error = -1;
-	if(arrayFlyCodes != NULL && lenFlyCodes >= 0)
-	{
-		error = 0;
-		for(int i = 0; i < lenFlyCodes; i++)
-		{
-			if(arrayFlyCodes[i].isEmpty == FALSE)
+			if(list[i].isEmpty == FALSE)
 			{
-				printOneFlyCode(arrayFlyCodes[i]);
+				FlyCode_printOne(list[i]);
 			}
 		}
+		returnAux = 0;
 	}
-	return error;
+	return returnAux;
 }
 
-int findIsEmptyFlyCode(eFlyCode arrayFlyCodes[], int lenFlyCodes)
+int FlyCode_findIsEmpty(FlyCode* list, int len)
 {
-	int retorno;
-	retorno = -1;
-	if(arrayFlyCodes != NULL && lenFlyCodes > 0)
+	int returnAux;
+	returnAux = -1;
+
+	if(list != NULL && len > 0)
 	{
-		for(int i = 0; i < lenFlyCodes; i++)
+		for(int i = 0; i < len; i++)
 		{
-			if(arrayFlyCodes[i].isEmpty == TRUE)
+			if(list[i].isEmpty == TRUE)
 			{
-				retorno = i;
+				returnAux = i;
 				break;
 			}
 		}
 	}
-	return retorno;
+	return returnAux;
 }
 
-int AltaFlyCode(eFlyCode arrayFlyCodes[], int lenFlyCodes)
+int addFlyCode(FlyCode* list, int len, int* lastId)
 {
-	int error;
-	int indexLibre;
-	int existe;
-	eFlyCode auxiliar;
+	int returnAux;
+	int indice;
+	char newFlyCode[50];
+	int estadoVuelo;
+	char estadoVueloStr[50];
+	returnAux = -1;
 
-	existe = -1;
-	error = -1;
-
-	if(arrayFlyCodes != NULL && lenFlyCodes > 0)
+	if(list != NULL && len > 0 && lastId != NULL)
 	{
-		printf("\nAclaracion: el codigo de vuelo es alfanumerico y debe contener 9 caracteres.\n");
-		error = 0;
-		indexLibre = findIsEmptyFlyCode(arrayFlyCodes, lenFlyCodes);
-		if(indexLibre != -1)
-		{
-			PedirFlyCode(auxiliar.flyCode, "\nIngrese el nuevo codigo de vuelo: ", "Error, codigo de vuelo no valido. Intentelo de nuevo: ");
-			existe = findFlyCode(arrayFlyCodes, lenFlyCodes, auxiliar.flyCode);
+		indice = FlyCode_findIsEmpty(list, len);
 
-			if(existe == 0)
-			{
-				printf("\nEl codigo ingresado ya existe en el sistema.");
-				error = -1;
-				return error;
-			}
-			else
-			{
-				arrayFlyCodes[indexLibre] = auxiliar;
-				printf("\nEstados:\n1. ACTIVO\n2. CANCELADO\n3. DEMORADO\n");
-				utn_getNumero(&arrayFlyCodes[indexLibre].statusFlight, "Ingrese el estado de vuelo: ", "Error, opcion no valida. Intentelo de nuevo: ", 1, 3);
-				arrayFlyCodes[indexLibre].isEmpty = FALSE;
-			}
-		}
-		else
+		if(indice != -1)
 		{
-			printf("\nNo hay mas espacio para ingresar nuevos vuelos.");
+			*lastId = *lastId + 1;
+			getNewFlyCode(newFlyCode, "Ingresar nuevo codigo de vuelo (Tener en cuenta: debe ser un codigo de 9 caracteres): ", "Error, codigo invalido. Intentelo de nuevo: ");
+			strcpy(list[indice].codigoVueloStr, newFlyCode);
+			list[indice].idFlyCode = *lastId;
+			utn_getNumero(&estadoVuelo, "**** Estados de vuelo ****\n"
+					"1. Activo\n2. Demorado\n3. Aterrizado\n4. Cancelado\n\n"
+					"Seleccione el estado de vuelo: ", "Error, intentelo de nuevo: ", 1, 4);
+			getStatusFlightStr(estadoVuelo, estadoVueloStr);
+			strcpy(list[indice].estadoVueloStr, estadoVueloStr);
+			list[indice].isEmpty = FALSE;
+			returnAux = 0;
 		}
 	}
-	return error;
+	return returnAux;
 }
 
-void PedirFlyCode(char newFlyCode[], char mensaje[], char mensajeError[])
+int getStatusFlightStr(int idEstadoVuelo, char* estadoVueloStr)
 {
-	int error;
+	int returnAux;
+	returnAux = -1;
 
-	printf("%s", mensaje);
+	if(idEstadoVuelo > 0 && estadoVueloStr != NULL)
+	{
+		switch(idEstadoVuelo)
+		{
+			case 1:
+				strcpy(estadoVueloStr, "Activo");
+				break;
+			case 2:
+				strcpy(estadoVueloStr, "Demorado");
+				break;
+			case 3:
+				strcpy(estadoVueloStr, "Aterrizado");
+				break;
+			default:
+				strcpy(estadoVueloStr, "Cancelado");
+				break;
+		}
+		returnAux = 0;
+	}
+	return returnAux;
+}
+
+int getNewFlyCode(char* newFlyCode, char mensaje[], char mensajeError[])
+{
+	int validacion;
+	validacion = -1;
+
+	printf("\n%s", mensaje);
 	__fpurge(stdin);
 	scanf("%s", newFlyCode);
 
-	error = VerificarFlyCode(newFlyCode, 'a', 'z');
+	validacion = VerificarFlyCode(newFlyCode, 'a', 'z');
 
-	while(error != 0)
+	while(validacion != 1)
 	{
-		printf("%s", mensajeError);
+		printf("\n%s", mensajeError);
 		__fpurge(stdin);
 		scanf("%s", newFlyCode);
-		error = VerificarFlyCode(newFlyCode, 'a', 'z');
+		validacion = VerificarFlyCode(newFlyCode, 'a', 'z');
 	}
-
+	return validacion;
 }
 
-int VerificarFlyCode(char newFlyCode[], char minimo , char maximo)
+int VerificarFlyCode(char newFlyCode[], char minimo, char maximo)
 {
-	int error;
+	int validacion;
 	int lenFlyCode;
+	char arrayNumeros[10] = {'0', '1','2', '3', '4', '5', '6', '7', '8', '9'};
 
-	char arrayNumeros[10] = {'0','1','2','3','4','5','6','7','8','9'};
-
-	error = 0;
+	validacion = 1;
 	lenFlyCode = strlen(newFlyCode);
 
 	if(lenFlyCode != 9)
 	{
-		error = -1;
+		validacion = -1;
 	}
 	else
 	{
 		for(int i = 0; i < lenFlyCode; i++)
 		{
-			if(newFlyCode[i] < minimo || newFlyCode[i] > maximo)
+			if(esCaracter(newFlyCode[i]) == 0)
 			{
-				error = -1;
+				validacion = -1;
 			}
 			for(int j = 0; j < 10; j++)
 			{
 				if(newFlyCode[i] == arrayNumeros[j])
+
 				{
-					error = 0;
+					validacion = 1;
 				}
 			}
 		}
 	}
-	return error;
+	return validacion;
 }
+

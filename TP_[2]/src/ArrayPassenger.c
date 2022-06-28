@@ -1,611 +1,739 @@
 /*
-	ArrayPassenger.c
-
-	Fernàndez Juan Ignacio 1ºB
-	Trabajo pràctico Nº2
-*/
-
-#include <stdio_ext.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
+ * ArrayPassenger.c
+ *
+ *  Created on: 25 jun. 2022
+ *      Author: juan
+ */
 
 #include "ArrayPassenger.h"
-#include "ArrayFlyCode.h"
-#include "Input.h"
+#include "utn.h"
+#include <stdio.h>
+#include <string.h>
 
-#define TOLOWER 0
-#define TOUPPER 1
 #define TRUE 1
-#define FALSE 2
-#define TURISTA 1
-#define PRIMERA_CLASE 2
-#define EJECUTIVO 3
-#define PREMUIM 4
+#define FALSE 0
+#define TAM_F 100
 #define ASCENDENTE 1
 #define DESCENDENTE 0
-#define ACTIVO 1
-#define TAM_F 50
-#define TAM_P 2000
+#define TOUPPER 1
+#define TOLOWER 0
 
-static int idIncremental = 1;
-static int ePassenger_ObtenerID(void);
-static int ePassenger_ObtenerID()
+int initPassengers(Passenger* list, int len)
 {
-	return idIncremental++;
-}
+	int returnAux;
+	returnAux = -1;
 
-int initPassengers(ePassenger arrayPassengers[], int lenPassengers)
-{
-	int retorno;
-	retorno = -1;
-
-	if(arrayPassengers != NULL && lenPassengers >= 0)
+	if(list != NULL && len >= 0)
 	{
-		for(int i = 0; i < lenPassengers; i++)
+		for(int i = 0; i < len; i++)
 		{
-			arrayPassengers[i].isEmpty = TRUE;
+			list[i].isEmpty = TRUE;
 		}
-		retorno = 0;
+		returnAux = 0;
 	}
-	return retorno;
+	return returnAux;
 }
 
-
-int AltaForzadaPasajeros(ePassenger arrayPassengers[], int lenPassengers)
+int addPassenger(Passenger* list, int len, int id, char name[], char lastName[], float price, int typePassenger, int idFlyCode)
 {
-	int retorno;
-	retorno = -1;
+	int returnAux;
+	int indiceLibre;
+	returnAux = -1;
 
-	ePassenger auxiliarPassengers[5] = {{1100, "Joaquin", "Acosta", 500, "ABCD00100", EJECUTIVO, FALSE},
-										{1101, "Lucas", "Perez", 650, "ABCD00101", EJECUTIVO, FALSE},
-										{1102, "Florencia", "Lagos", 400, "ABCD00101", TURISTA, FALSE},
-										{1103, "Aixa", "Gomez", 700, "ABCD00102", TURISTA, FALSE},
-										{1104, "Marcos", "Gomez", 400, "ABCD00103", PRIMERA_CLASE, FALSE}};
-
-	if(arrayPassengers != NULL && lenPassengers > 0)
+	if(list != NULL && len >= 0 && id > 0 && name != NULL && lastName != NULL && price > 0 && typePassenger > 0 && idFlyCode > 0)
 	{
-		for(int i = 0; i < 5; i++)
+		indiceLibre = findIsEmpty(list, len);
+
+		if(indiceLibre != -1)
 		{
-			arrayPassengers[i] = auxiliarPassengers[i];
+			list[indiceLibre].id = id;
+			strcpy(list[indiceLibre].name, name);
+			strcpy(list[indiceLibre].lastName, lastName);
+			list[indiceLibre].price = price;
+			list[indiceLibre].typePassenger = typePassenger;
+			list[indiceLibre].idFlyCode = idFlyCode;
+			list[indiceLibre].isEmpty = FALSE;
+			returnAux = 0;
 		}
-		retorno = 0;
 	}
-	return retorno;
+	return returnAux;
 }
 
-int findIsEmpty(ePassenger arrayPassengers[], int lenPassengers)
+int findPassengerById(Passenger* list, int len, int id)
 {
-	int retorno;
-	retorno = -1;
+	int returnAux;
+	returnAux = -1;
 
-	if(arrayPassengers != NULL && lenPassengers > 0)
+	if(list != NULL && len > 0)
 	{
-		for(int i = 0; i < lenPassengers; i++)
+		for(int i = 0; i < len; i++)
 		{
-			if(arrayPassengers[i].isEmpty == TRUE)
+			if(list[i].isEmpty == FALSE && list[i].id == id)
 			{
-				retorno = i;
+				returnAux = i;
 				break;
 			}
 		}
 	}
-	return retorno;
+	return returnAux;
 }
 
-int addPassenger(ePassenger arrayPassengers[], int lenPassengers, int id, char name[], char lastName[], float price, int typePassenger, char flyCode[])
+int removePassenger(Passenger* list, int len, int id)
 {
-	int retorno;
-	int indexLibre;
+	int returnAux;
+	int indiceRemover;
+	returnAux = -1;
 
-	retorno = -1;
-	indexLibre = findIsEmpty(arrayPassengers, lenPassengers);
-
-	if(arrayPassengers != NULL && lenPassengers > 0)
+	if(list != NULL && len > 0)
 	{
-		if(indexLibre != -1)
+		indiceRemover = findPassengerById(list, len, id);
+
+		if(indiceRemover != -1)
 		{
-			arrayPassengers[indexLibre].id = id;
-			strcpy(arrayPassengers[indexLibre].name, name);
-			strcpy(arrayPassengers[indexLibre].lastName, lastName);
-			arrayPassengers[indexLibre].price = price;
-			arrayPassengers[indexLibre].typePassenger = typePassenger;
-			strcpy(arrayPassengers[indexLibre].flycode, flyCode);
-			arrayPassengers[indexLibre].isEmpty = FALSE;
-
-			utn_DarFormatoCadena(arrayPassengers[indexLibre].name, 51);
-			utn_DarFormatoCadena(arrayPassengers[indexLibre].lastName, 51);
-
-			retorno = 0;
+			list[indiceRemover].isEmpty = TRUE;
+			returnAux = 0;
 		}
 	}
-	return retorno;
+	return returnAux;
 }
 
-int PedirDatos(ePassenger arrayPassengers[], int lenPassengers,eFlyCode arrayFlyCodes[], int lenFlyCodes)
+int findIsEmpty(Passenger* list, int len)
 {
-	int retorno;
-	int id;
-	char name[51];
-	char lastName[51];
-	float price;
-	int typePassenger;
-	char flyCode[10];
+	int returnAux;
+	returnAux = -1;
 
-	id = ePassenger_ObtenerID();
-	utn_getString(name, "Nombre: ", "Error, nombre no valido. Intentelo de nuevo: ", 51, 'A', 'z');
-	utn_getString(lastName, "Apellido: ", "Error, apellido no valido. Intentelo de nuevo: ", 51, 'A', 'z');
-	utn_getNumeroFloat(&price, "Precio: ", "Error, precio fuera de rango. Intentelo de nuevo: ", 1, 10000);
-	utn_getNumero(&typePassenger, "\n1. TURISTA\n2. PRIMERA CLASE\n3. EJECUTIVO\n4. PREMIUM\n\nTipo de pasajero: ",
-									"Error, tipo de pasajero no valido. Intentelo de nuevo: ", 1, 4);
-	printFlyCode(arrayFlyCodes, TAM_F);
-	printf("\nTener en cuenta al ingresar el codigo de vuelo: el mismo es alfanumerico y debe contar con 9 caracteres.\n");
-	PedirFlyCode(flyCode, "Ingresar codigo de vuelo: ", "Error, codigo de vuelo no valido. Intentelo de nuevo: ");
-	retorno = findFlyCode(arrayFlyCodes, lenFlyCodes, flyCode);
-
-	while(retorno != 0)
+	if(list != NULL && len >= 0)
 	{
-		printf("\nCodigo de vuelo no encontrado. Intentelo de nuevo: ");
-		PedirFlyCode(flyCode, "Ingresar codigo de vuelo: ", "Error, codigo de vuelo no valido. Intentelo de nuevo: ");
-		retorno = findFlyCode(arrayFlyCodes, lenFlyCodes, flyCode);
-	}
-
-	retorno = addPassenger(arrayPassengers, lenPassengers, id, name, lastName, price, typePassenger, flyCode);
-
-	return retorno;
-}
-
-int findPassengerById(ePassenger arrayPassengers[], int lenPassengers, int id)
-{
-	int find;
-	find = -1;
-
-	if(arrayPassengers != NULL && lenPassengers > 0)
-	{
-		for(int i = 0; i < lenPassengers; i++)
+		for(int i = 0; i < len; i++)
 		{
-			if(arrayPassengers[i].isEmpty == FALSE && arrayPassengers[i].id == id)
+			if(list[i].isEmpty == TRUE)
 			{
-				find = i;
+				returnAux = i;
+				break;
 			}
 		}
 	}
-	return find;
+	return returnAux;
 }
 
-int removePassengerById(ePassenger arrayPassengers[], int lenPassengers, int id)
+int sortPassengers(Passenger* list, int len, int order)
 {
-	int remove;
-	int find;
-	int confirmarEliminacion;
+	int returnAux;
+	int comparacionApellido;
+	int comparacionTipoPasajero;
+	Passenger auxiliar;
+	returnAux = -1;
 
-	remove = -1;
-
-	if(arrayPassengers != NULL && lenPassengers > 0)
+	if(list != NULL && len > 0 && (order == 1 || order == 0))
 	{
-		find = findPassengerById(arrayPassengers, lenPassengers, id);
-		if(find != -1)
+		for(int i = 0; i < len - 1; i++)
 		{
-			for(int i = 0; i < lenPassengers; i++)
+			for(int j = i + 1; j < len; j++)
 			{
-				if(arrayPassengers[i].isEmpty == FALSE && arrayPassengers[i].id == id)
+				if(list[i].isEmpty == FALSE && list[j].isEmpty == FALSE)
 				{
-					printf("\nID: %d | %s, %s", arrayPassengers[i].id, arrayPassengers[i].lastName, arrayPassengers[i].name);
-					confirmarEliminacion = utn_ConfirmarAccion("\n\n¿Quiere eliminar a este pasajero? (si/no)\n", "Error, opcion no valida. Intentelo de nuevo (si/no)\n");
-					if(confirmarEliminacion == 1)
+					comparacionApellido = Passenger_CompareByLastName(list[i], list[j]);
+
+					if((order == 1 && comparacionApellido == 1) || (order == 0 && comparacionApellido == -1))
 					{
-						arrayPassengers[i].isEmpty = TRUE;
-						remove = 0;
+						auxiliar = list[i];
+						list[i] = list[j];
+						list[j] = auxiliar;
 					}
 					else
 					{
-						remove = 1;
+						if(comparacionApellido == 0)
+						{
+							comparacionTipoPasajero = Passenger_CompareByTypePassenger(list[i], list[j]);
+							if((order == 1 && comparacionTipoPasajero == 1) || (order == 0 && comparacionTipoPasajero == -1))
+							{
+								auxiliar = list[i];
+								list[i] = list[j];
+								list[j] = auxiliar;
+							}
+						}
 					}
 				}
 			}
 		}
+		returnAux = 0;
 	}
-	return remove;
+	return returnAux;
 }
 
-int modifyPassenger(ePassenger arrayPassengers[], int lenPassengers, eFlyCode arrayFlyCodes[], int lenFlyCodes,int id)
+int Passenger_CompareByLastName(Passenger passengerUno, Passenger passengerDos)
 {
-	int modify;
-	int find;
-	modify = -1;
+	int comparacion;
+	char nombreUno[50];
+	char nombreDos[50];
 
-	if(arrayPassengers != NULL && lenPassengers > 0)
+	strcpy(nombreUno, passengerUno.lastName);
+	strcpy(nombreDos, passengerDos.lastName);
+
+	if(strcmp(nombreUno, nombreDos) > 0)
 	{
-		find = findPassengerById(arrayPassengers, lenPassengers, id);
-		if(find != -1)
+		comparacion = 1;
+	}
+	else
+	{
+		if(strcmp(nombreUno, nombreDos) < 0)
 		{
-			for(int i = 0; i < lenPassengers; i++)
+			comparacion = -1;
+		}
+		else
+		{
+			comparacion = 0;
+		}
+	}
+	return comparacion;
+}
+
+int Passenger_CompareByTypePassenger(Passenger pasajeroUno, Passenger pasajeroDos)
+{
+	int comparacion;
+	int tipoPasajeroUno;
+	int tipoPasajeroDos;
+
+	comparacion = 0;
+	tipoPasajeroUno = pasajeroUno.typePassenger;
+	tipoPasajeroDos = pasajeroDos.typePassenger;
+
+	if(tipoPasajeroUno > tipoPasajeroDos)
+	{
+		comparacion = 1;
+	}
+	else
+	{
+		if(tipoPasajeroUno < tipoPasajeroDos)
+		{
+			comparacion = -1;
+		}
+	}
+	return comparacion;
+}
+
+int printPassengers(Passenger* list, int len, FlyCode* listFlyCode)
+{
+	int returnAux;
+	returnAux = -1;
+
+	if(list != NULL && len > 0)
+	{
+		printf("\n==============================================================================================");
+		printf("\n ID \tNAME\t   LASTNAME\t\tPRICE\t   TYPEPASSENGER      FLYCODE\tSTATUSFLIGHT ");
+		printf("\n==============================================================================================\n");
+		for(int i = 0; i < len; i++)
+		{
+			if(list[i].isEmpty == FALSE)
 			{
-				if(arrayPassengers[i].isEmpty == FALSE && arrayPassengers[i].id == id)
+				printOnePassenger(list[i], listFlyCode);
+			}
+		}
+		printf("==============================================================================================\n");
+		returnAux = 0;
+	}
+	return returnAux;
+}
+
+void printOnePassenger(Passenger unPasajero, FlyCode* list)
+{
+	char tipoPasajeroStr[50];
+	char flyCodeStr[50];
+	char estadoVuelo[50];
+
+	Passenger_getTyePassenger(unPasajero.typePassenger, tipoPasajeroStr);
+	Passenger_getStatusAndFlightCode(unPasajero.idFlyCode, list, flyCodeStr, estadoVuelo);
+
+	printf("| %-4d | %-10s %-15s | %-10.2f | %-15s | %-10s | %-10s |\n", unPasajero.id, unPasajero.name,
+	unPasajero.lastName, unPasajero.price, tipoPasajeroStr, flyCodeStr, estadoVuelo);
+}
+
+int Passenger_getTyePassenger(int typePassenger, char* typePassengerStr)
+{
+	int returnAux;
+	returnAux = -1;
+
+	if(typePassenger > 0 && typePassengerStr != NULL)
+	{
+		switch(typePassenger)
+		{
+		case 1:
+			strcpy(typePassengerStr, "Turista");
+			break;
+		case 2:
+			strcpy(typePassengerStr, "Primera clase");
+			break;
+		case 3:
+			strcpy(typePassengerStr, "Ejecutivo");
+			break;
+		default:
+			strcpy(typePassengerStr, "Premium");
+			break;
+		}
+		returnAux = 0;
+	}
+	return returnAux;
+}
+
+int Passenger_getStatusAndFlightCode(int idFlyCode, FlyCode* list,char* codigoVueloStr, char* estadoVueloStr)
+{
+	int returnAux;
+	returnAux = -1;
+
+	if(idFlyCode > 0 && codigoVueloStr != NULL && estadoVueloStr != NULL)
+	{
+		for(int i = 0; i < TAM_F; i++)
+		{
+			if(list[i].idFlyCode == idFlyCode)
+			{
+				strcpy(codigoVueloStr, list[i].codigoVueloStr);
+				strcpy(estadoVueloStr, list[i].estadoVueloStr);
+			}
+		}
+		returnAux = 0;
+	}
+	return returnAux;
+}
+
+int sortPassengersByCode(Passenger* list, int len, int order, FlyCode* listFlyCode)
+{
+	int returnAux;
+	int retornoComparacion;
+	Passenger auxiliar;
+	returnAux = -1;
+
+	if(list != NULL && (order == 0 || order == 1))
+	{
+		for(int i = 0; i < len - 1; i++)
+		{
+			for(int j = i + 1; j < len; j++)
+			{
+				if(list[i].isEmpty == FALSE && list[j].isEmpty == FALSE)
 				{
-					modify = modifyMenu(arrayPassengers[i], arrayFlyCodes, lenFlyCodes);
+					retornoComparacion = Passenger_CompareByCode(list[i], list[j], listFlyCode);
+
+					if((order == 1 && retornoComparacion == 1) || (order == 0 && retornoComparacion == -1))
+					{
+						auxiliar = list[i];
+						list[i] = list[j];
+						list[j] = auxiliar;
+					}
 				}
 			}
 		}
+		returnAux = 0;
 	}
-	return modify;
+	return returnAux;
 }
 
-int modifyMenu(ePassenger passenger, eFlyCode arrayFlyCodes[], int lenFlyCodes)
+int printPassengersFlyCode(Passenger* list, int len, int order, FlyCode* listFlyCode,char statusFlight[])
 {
-	int modify;
+	int returnAux;
+	char estadoVuelo[50];
+	char codigoVuelo[50];
+	returnAux = -1;
+
+	if(list != NULL && len > 0 && listFlyCode != NULL && statusFlight != NULL && (order == 0 || order == 1))
+	{
+		sortPassengersByCode(list, len, order, listFlyCode);
+
+		for(int i = 0; i < len; i++)
+		{
+			Passenger_getStatusAndFlightCode(list[i].idFlyCode, listFlyCode, codigoVuelo, estadoVuelo);
+
+			if(strcmp(estadoVuelo, statusFlight) == 0 && list[i].isEmpty == FALSE)
+			{
+				printOnePassenger(list[i], listFlyCode);
+			}
+		}
+		returnAux = 1;
+	}
+
+	return returnAux;
+}
+
+int Passenger_CompareByCode(Passenger passengerUno, Passenger passengerDos, FlyCode* list)
+{
+	int comparacion;
+	char codigoVueloUno[20];
+	char codigoVueloDos[20];
+	char estadoVueloUno[20];
+	char estadoVueloDos[20];
+
+	Passenger_getStatusAndFlightCode(passengerUno.idFlyCode, list, codigoVueloUno, estadoVueloUno);
+	Passenger_getStatusAndFlightCode(passengerDos.idFlyCode, list, codigoVueloDos, estadoVueloDos);
+
+	if(strcmp(codigoVueloUno, codigoVueloDos) > 0)
+	{
+		comparacion = 1;
+	}
+	else
+	{
+		if(strcmp(codigoVueloUno, codigoVueloDos) < 0)
+		{
+			comparacion = -1;
+		}
+		else
+		{
+			comparacion = 0;
+		}
+	}
+	return comparacion;
+}
+
+int Passenger_modify(Passenger* list, int len, FlyCode* listFlyCode, int lenFlyCode)
+{
+	int returnAux;
+	int indice;
+	int idModificar;
+	returnAux = -1;
+
+	if(list != NULL && len > 0 && listFlyCode != NULL && lenFlyCode > 0)
+	{
+		printPassengers(list, len, listFlyCode);
+		utn_getNumero(&idModificar, "Ingresar ID del pasajero: ", "Error, intentelo de nuevo: ", 1, len);
+		indice = findPassengerById(list, len, idModificar);
+
+		if(indice != -1 && list[indice].isEmpty == FALSE)
+		{
+			printOnePassenger(list[indice], listFlyCode);
+			Passenger_MenuModificar(list, listFlyCode, lenFlyCode, indice);
+		}
+	}
+	return returnAux;
+}
+
+int Passenger_MenuModificar(Passenger* list, FlyCode* listFlyCode, int lenFlyCode, int indice)
+{
+	int returnAux;
+	int option;
 	char newName[51];
 	char newLastName[51];
 	float newPrice;
 	int newTypePassenger;
-	char newFlyCode[10];
-	int confirmarModificacion;
-	int opcion;
+	int newFlyCode;
+	int modificaciones;
+	returnAux = -1;
 
-	modify = 1;
-
-	do
+	if(listFlyCode != NULL && lenFlyCode > 0 && list != NULL)
 	{
-		printf("\n\nOpciones para modificar\n:\n1. Nombre\n2. Apellido\n3. Precio\n4. Tipo de pasajero\n5. Codigo de vuelo\n6. Salir");
-		utn_getNumero(&opcion, "\nSeleccione que campo quiere modificar: ", "Error, opcion ingresada no valida. Intentelo de nuevo: ", 1, 6);
+		do
+		{
+			utn_getNumero(&option, "\n**** Menu para modificaciones ****\n"
+							"1. Nombre\n"
+							"2. Apellido\n"
+							"3. Precio\n"
+							"4. Tipo de pasajero\n"
+							"5. Codigo de vuelo\n"
+							"6. Regresar al menu principal\n\n"
+							"Seleccione una opcion: ", "Error, intentelo de nuevo: ", 1, 6);
 
-		switch(opcion)
+			switch(option)
+			{
+				case 1:
+					utn_getString(newName, "Ingresar nombre: ", "Error, intentelo de nuevo: ", 51);
+					modificaciones = utn_ConfirmarAccion("¿Confirmar cambio? si/no: ", "Error, intentelo de nuevo (opciones: si/no): ");
+
+					if(modificaciones == 1)
+					{
+						Passenger_DarFormatoNombre(newName, strlen(newName));
+						strcpy(list[indice].name, newName);
+					}
+					break;
+				case 2:
+					utn_getString(newLastName, "Ingresar apellido: ", "Error, intentelo de nuevo: ", 51);
+					modificaciones = utn_ConfirmarAccion("¿Confirmar cambio? si/no: ", "Error, intentelo de nuevo (opciones: si/no): ");
+
+					if(modificaciones == 1)
+					{
+						Passenger_DarFormatoNombre(newLastName, strlen(newLastName));
+						strcpy(list[indice].lastName, newLastName);
+					}
+					break;
+				case 3:
+					utn_getNumeroFloat(&newPrice, "Ingresar precio: ", "Error, intentelo de nuevo: ", 1, 1000000);
+					modificaciones = utn_ConfirmarAccion("¿Confirmar cambio? si/no: ", "Error, intentelo de nuevo (opciones: si/no): ");
+
+					if(modificaciones == 1)
+					{
+						list[indice].price = newPrice;
+					}
+					break;
+				case 4:
+					utn_getNumero(&newTypePassenger, "\nTipos de pasajeros\n\n1. Turista\n"
+							"2. Primer clase\n3. Ejecutivo\n4. Premium\n\nIngresar tipo de pasajero (numero): ", "Error, intentelo de nuevo: ", 1, 4);
+					modificaciones = utn_ConfirmarAccion("¿Confirmar cambio? si/no: ", "Error, intentelo de nuevo (opciones: si/no): ");
+
+					if(modificaciones == 1)
+					{
+						list[indice].typePassenger = newTypePassenger;
+					}
+					break;
+				case 5:
+					FlyCode_printFlyCodes(listFlyCode, lenFlyCode);
+					utn_getNumero(&newFlyCode, "Ingresar codigo de vuelo (numero): ", "Error, intentelo de nuevo: ", 1, lenFlyCode);
+					modificaciones = utn_ConfirmarAccion("¿Confirmar cambio? si/no: ", "Error, intentelo de nuevo (opciones: si/no): ");
+
+					if(modificaciones == 1)
+					{
+						list[indice].idFlyCode = newFlyCode;
+					}
+					break;
+				default:
+					printf("\nRegreso al menu principal!");
+					break;
+			}
+		} while(option != 6);
+
+		returnAux = 0;
+	}
+	return returnAux;
+}
+
+int Passenger_PedirDatos(Passenger* list, int len, FlyCode* listFlyCode, int lenFlyCode, int* lastId)
+{
+	int returnAux;
+	char nombre[51];
+	char apellido[51];
+	float precio;
+	int tipoPasajero;
+	int codigoVuelo;
+	int lenNombre;
+	int lenApellido;
+
+	returnAux = -1;
+
+	if(list != NULL && listFlyCode != NULL && lastId != NULL)
+	{
+		*lastId = *lastId + 1;
+
+		utn_getString(nombre, "Ingresar nombre: ", "Error, intentelo de nuevo: ", 51);
+		while(Passenger_ValidarNombre(nombre, strlen(nombre)) == 0)
+		{
+			printf("\nNombre no valido. Intentelo de nuevo.\n");
+			utn_getString(nombre, "Ingresar nombre: ", "Error, intentelo de nuevo: ", 51);
+		}
+		utn_getString(apellido, "Ingresar apellido: ", "Error, intentelo de nuevo: ", 51);
+		while(Passenger_ValidarNombre(apellido, strlen(apellido)) == 0)
+		{
+			printf("\nApellido no valido. Intentelo de nuevo.\n");
+			utn_getString(apellido, "Ingresar apellido: ", "Error, intentelo de nuevo: ", 51);
+		}
+		utn_getNumeroFloat(&precio, "Ingresar precio: ", "Error, intentelo de nuevo: ", 1, 1000000);
+		utn_getNumero(&tipoPasajero, "\nTipos de pasajeros\n\n1. Turista\n"
+						"2. Primer clase\n3. Ejecutivo\n4. Premium\n\nIngresar tipo de pasajero (numero): ", "Error, intentelo de nuevo: ", 1, 4);
+		FlyCode_printFlyCodes(listFlyCode, lenFlyCode);
+		utn_getNumero(&codigoVuelo, "\nIngresar codigo de vuelo (numero): ", "Error, intentelo de nuevo: ", 1, lenFlyCode);
+
+		lenNombre = strlen(nombre);
+		lenApellido = strlen(apellido);
+		Passenger_DarFormatoNombre(nombre, lenNombre);
+		Passenger_DarFormatoNombre(apellido, lenApellido);
+
+		returnAux = addPassenger(list, len, *lastId, nombre, apellido, precio, tipoPasajero, codigoVuelo);
+	}
+	return returnAux;
+}
+
+int Passenger_delete(Passenger* list, int len, FlyCode* listFlyCode, int lenFlyCode)
+{
+	int returnAux;
+	int idRemover;
+	int indice;
+	int confirmacion;
+	returnAux = -1;
+
+	if(list != NULL && len > 0 && listFlyCode != NULL && lenFlyCode > 0)
+	{
+		printPassengers(list, lenFlyCode, listFlyCode);
+		utn_getNumero(&idRemover, "Ingresar ID del pasajero: ", "Error, intentelo de nuevo: ", 1, len);
+		indice = findPassengerById(list, lenFlyCode, idRemover);
+
+		if(indice != -1)
+		{
+			printOnePassenger(list[indice], listFlyCode);
+			confirmacion = utn_ConfirmarAccion("¿Confirmar eliminacion? si/no: ", "Error, intentelo de nuevo (opciones: si/no): ");
+
+			if(confirmacion == 1)
+			{
+				removePassenger(list, lenFlyCode, idRemover);
+				returnAux = 0;
+			}
+		}
+	}
+	return returnAux;
+}
+
+int Passenger_subMenu(int optionSubMenu, Passenger* list, int len, FlyCode* listFlyCode)
+{
+	int returnAux;
+	float promedio;
+	float total;
+	int order;
+	returnAux = -1;
+
+	if(list != NULL && len > 0 && optionSubMenu > 0 && listFlyCode != NULL)
+	{
+		switch(optionSubMenu)
 		{
 			case 1:
-				utn_getString(newName, "Nuevo nombre: ", "Error, nombre no valido. Intentelo de nuevo: ", 51, 'A', 'z');
-				confirmarModificacion = utn_ConfirmarAccion("¿Conservar cambios? si/no", "Error, opcion no valida. Intentelo de nuevo (si/no): ");
-				if(confirmarModificacion == 1)
+				utn_getNumero(&order, "Orden:\n1. Ascendente\n2. Descendente\nSeleccione una opcion: ", "Error, intentelo de nuevo: ", 1, 2);
+				if(order == 1)
 				{
-					strcpy(passenger.name, newName);
-					modify = 0;
+					sortPassengers(list, len, ASCENDENTE);
 				}
+				else
+				{
+					sortPassengers(list, len, DESCENDENTE);
+				}
+				printPassengers(list, len, listFlyCode);
 				break;
 			case 2:
-				utn_getString(newLastName, "Nuevo apellido: ", "Error, apellido no valido. Intentelo de nuevo: ", 51, 'A', 'z');
-				confirmarModificacion = utn_ConfirmarAccion("¿Conservar cambios? si/no", "Error, opcion no valida. Intentelo de nuevo (si/no): ");
-				if(confirmarModificacion == 1)
-				{
-					strcpy(passenger.lastName, newLastName);
-					modify = 0;
-				}
+				Passenger_getPromedioVuelos(list, len, &total, &promedio);
+				printf("\nPrecio total de pasajes: %.2f", total);
+				printf("\nPromedio: %.2f\n", promedio);
+				Passenger_getSuperiorPromedio(list, len, &promedio, listFlyCode);
 				break;
 			case 3:
-				utn_getNumeroFloat(&newPrice, "Nuevo precio: ", "Error, precio fuera de rango. Intentelo de nuevo: ", 1, 10000);
-				confirmarModificacion = utn_ConfirmarAccion("¿Conservar cambios? si/no", "Error, opcion no valida. Intentelo de nuevo (si/no): ");
-				if(confirmarModificacion == 1)
+				utn_getNumero(&order, "Orden:\n1. Ascendente\n2. Descendente\nSeleccione una opcion: ", "Error, intentelo de nuevo: ", 1, 2);
+				if(order == 1)
 				{
-					passenger.price = newPrice;
-					modify = 0;
+					printPassengersFlyCode(list, len, ASCENDENTE, listFlyCode, "Activo");
 				}
-				break;
-			case 4:
-				utn_getNumero(&newTypePassenger, "\n1. TURISTA\n2. PRIMERA CLASE\n3. EJECUTIVO\n4. PREMIUM\n\nTipo de pasajero: ",
-																"Error, tipo de pasajero no valido. Intentelo de nuevo: ", 1, 4);
-				confirmarModificacion = utn_ConfirmarAccion("¿Conservar cambios? si/no", "Error, opcion no valida. Intentelo de nuevo (si/no): ");
-				if(confirmarModificacion == 1)
+				else
 				{
-					passenger.typePassenger = newTypePassenger;
-					modify = 0;
-				}
-				break;
-			case 5:
-				PedirFlyCode(newFlyCode, "Ingresar codigo de vuelo: ", "Error, codigo de vuelo no valido. Intentelo de nuevo: ");
-				confirmarModificacion = utn_ConfirmarAccion("¿Conservar cambios? si/no", "Error, opcion no valida. Intentelo de nuevo (si/no): ");
-				if(confirmarModificacion == 1)
-				{
-					strcpy(passenger.flycode, newFlyCode);
-					modify = 0;
+					printPassengersFlyCode(list, len, DESCENDENTE, listFlyCode, "Activo");
 				}
 				break;
 			default:
-				printf("\nSalida del menu de modificaciones!");
+				printf("\nRegreso al menu principal!");
 				break;
 		}
-	} while(opcion != 6);
-	return modify;
+		returnAux = 0;
+	}
+	return returnAux;
 }
 
-int sortPassengers(ePassenger arrayPassengers[], int lenPassengers, int order)
+int Passenger_getPromedioVuelos(Passenger* list, int len, float* total, float* promedio)
 {
-	int error;
-	error = -1;
-	if(arrayPassengers != NULL && lenPassengers > 0)
-	{
-		error = 0;
-		for(int i = 0; i < lenPassengers; i++)
-		{
-			utn_DarFormatoCadena(arrayPassengers[i].name, 51);
-			utn_DarFormatoCadena(arrayPassengers[i].lastName, 51);
-		}
+	int returnAux;
+	int cantPasajeros;
+	returnAux = -1;
+	cantPasajeros = 0;
 
-		if(order == ASCENDENTE)
+	if(list != NULL && len > 0 && promedio != NULL)
+	{
+		for(int i = 0; i < len; i++)
 		{
-			ordenAscendente(arrayPassengers, lenPassengers);
+			if(list[i].isEmpty == FALSE)
+			{
+				*total += list[i].price;
+				cantPasajeros++;
+			}
+		}
+		*promedio = *total / cantPasajeros;
+		returnAux = 0;
+	}
+	return returnAux;
+}
+
+int Passenger_getSuperiorPromedio(Passenger* list, int len, float* promedio, FlyCode* listFlyCode)
+{
+	int returnAux;
+	int contador;
+
+	returnAux = -1;
+	contador = 0;
+
+	if(list != NULL && len > 0 && promedio != NULL && listFlyCode != NULL)
+	{
+		for(int i = 0; i < len; i++)
+		{
+			if(list[i].isEmpty == FALSE && list[i].price > *promedio)
+			{
+				contador++;
+				printOnePassenger(list[i], listFlyCode);
+			}
+		}
+		printf("\nCantidad de pasajeros que superan el promedio: %d", contador);
+		returnAux = 0;
+	}
+	return returnAux;
+}
+
+int Passenger_CargaForzada(Passenger* list, int len)
+{
+	int returnAux;
+	returnAux = -1;
+
+	Passenger auxiliar[5] = {{1, "Joaquin", "Acosta", 500, 1, 1,FALSE},
+							{2, "Lucas", "Perez", 1000, 1, 2,FALSE},
+							{3, "Florencia", "Lagos", 750, 2, 3,FALSE},
+							{4, "Aixa", "Gomez", 1500, 4, 1,FALSE},
+							{5, "Marcos", "Gomez", 5000, 3, 1,FALSE}};
+
+	if(list != NULL && len > 0)
+	{
+		for(int i = 0; i < 5; i++)
+		{
+			list[i] = auxiliar[i];
+		}
+		returnAux = 0;
+	}
+
+	return returnAux;
+}
+
+void Passenger_FormatearString(char cadena[], int lenCadena, int opcion)
+{
+	for(int i = 0; i < lenCadena; i++)
+	{
+		if(opcion == TOUPPER)
+		{
+			cadena[i] = toupper(cadena[i]);
 		}
 		else
 		{
-			if(order == DESCENDENTE)
+			if(opcion == TOLOWER)
 			{
-				ordenDescendente(arrayPassengers, lenPassengers);
-			}
-		}
-	}
-	return error;
-}
-
-void ordenAscendente(ePassenger arrayPassengers[], int lenPassengers)
-{
-	ePassenger auxiliar;
-
-	for(int i = 0; i < lenPassengers - 1; i++)
-	{
-		if(arrayPassengers[i].isEmpty == FALSE)
-		{
-			for(int j = i + 1; j < lenPassengers; j++)
-			{
-				if(strcmp(arrayPassengers[i].lastName, arrayPassengers[j].lastName) > 0)
-				{
-					auxiliar = arrayPassengers[i];
-					arrayPassengers[i] = arrayPassengers[j];
-					arrayPassengers[j] = auxiliar;
-				}
-				else
-				{
-					if(strcmp(arrayPassengers[i].lastName, arrayPassengers[j].lastName) == 0)
-					{
-						if(arrayPassengers[i].typePassenger > arrayPassengers[j].typePassenger)
-						{
-							auxiliar = arrayPassengers[i];
-							arrayPassengers[i] = arrayPassengers[j];
-							arrayPassengers[j] = auxiliar;
-						}
-					}
-				}
+				cadena[i] = tolower(cadena[i]);
 			}
 		}
 	}
 }
 
-void ordenDescendente(ePassenger arrayPassengers[], int lenPassengers)
+void Passenger_DarFormatoNombre(char cadena[], int lenCadena)
 {
-	ePassenger auxiliar;
+	Passenger_FormatearString(cadena, lenCadena, TOLOWER);
 
-	for(int i = 0; i < lenPassengers - 1; i++)
+	for(int i = 0; i < lenCadena; i++)
 	{
-		if(arrayPassengers[i].isEmpty == FALSE)
+		if(i == 0)
 		{
-			for(int j = i + 1; j < lenPassengers; j++)
+			cadena[i] = toupper(cadena[i]);
+		}
+		else
+		{
+			if(cadena[i] == ' ')
 			{
-				if(strcmp(arrayPassengers[i].lastName, arrayPassengers[j].lastName) < 0)
-				{
-					auxiliar = arrayPassengers[i];
-					arrayPassengers[i] = arrayPassengers[j];
-					arrayPassengers[j] = auxiliar;
-				}
-				else
-				{
-					if(strcmp(arrayPassengers[i].lastName, arrayPassengers[j].lastName) == 0)
-					{
-						if(arrayPassengers[i].typePassenger < arrayPassengers[j].typePassenger)
-						{
-							auxiliar = arrayPassengers[i];
-							arrayPassengers[i] = arrayPassengers[j];
-							arrayPassengers[j] = auxiliar;
-						}
-					}
-				}
+				cadena[i + 1] = toupper(cadena[i + 1]);
 			}
 		}
 	}
 }
 
-void PrintOnePassenger(ePassenger Pasajero, eFlyCode FlyCode)
+int Passenger_ValidarNombre(char* cadena, int len)
 {
-	printf("\nID: %d | %s, %s | Price: %.2f | Fly code: %s ", Pasajero.id, Pasajero.lastName, Pasajero.name,
-	Pasajero.price, Pasajero.flycode);
-	ReemplazarStatusFlight(FlyCode.statusFlight);
-	ReemplazarTypePassenger(Pasajero.typePassenger);
-}
+	int validacion;
+	validacion = 1;
 
-int printPassengers(ePassenger arrayPassengers[], int lenPassengers, eFlyCode arrayFlyCodes[], int lenFlyCodes)
-{
-	int error;
-	error = -1;
-
-	if(arrayPassengers != NULL && lenPassengers > 0)
+	for(int i = 0; i < len; i++)
 	{
-		error = 0;
-		for(int i = 0; i < lenFlyCodes; i++)
+		if(esCaracter(cadena[i]) == 0)
 		{
-			for(int j = 0; j < lenPassengers; j++)
-			{
-				if(arrayPassengers[j].isEmpty == FALSE && arrayFlyCodes[i].isEmpty == FALSE)
-				{
-					if(strcmp(arrayFlyCodes[i].flyCode, arrayPassengers[j].flycode) == 0)
-					{
-						PrintOnePassenger(arrayPassengers[j], arrayFlyCodes[i]);
-					}
-				}
-			}
+			validacion = 0;
+			break;
 		}
 	}
-	return error;
-}
-
-void ReemplazarTypePassenger(int tipoPasajero)
-{
-	switch(tipoPasajero)
-	{
-	case 1:
-		printf("| Type passenger: Turista ");
-		break;
-	case 2:
-		printf("| Type passenger: Primera clase ");
-		break;
-	case 3:
-		printf("| Type passenger: Ejecutivo ");
-		break;
-	case 4:
-		printf("| Type passenger: Premium ");
-		break;
-	}
-}
-
-void ReemplazarStatusFlight(int estadoVuelo)
-{
-	switch(estadoVuelo)
-	{
-	case 1:
-		printf("| Status flight: Activo ");
-		break;
-	case 2:
-		printf("| Status flight: Cancelado ");
-		break;
-	case 3:
-		printf("| Status flight: Demorado ");
-		break;
-	}
-}
-
-int sortPassengersByCode(ePassenger arrayPassengers[], int lenPassengers, int order, eFlyCode arrayFlyCodes[], int lenFlyCodes)
-{
-	int error;
-	ePassenger auxiliar;
-	error = -1;
-
-	if(arrayPassengers != NULL && lenPassengers > 0 && arrayFlyCodes != NULL && lenFlyCodes > 0)
-	{
-		error = 0;
-
-		for(int i = 0; i < lenPassengers - 1; i++)
-		{
-			if(arrayPassengers[i].isEmpty == FALSE)
-			{
-				for(int j = i + 1; j < lenPassengers; j++)
-				{
-					if(order == ASCENDENTE)
-					{
-						if(strcmp(arrayPassengers[i].flycode, arrayPassengers[j].flycode) > 0)
-						{
-							auxiliar = arrayPassengers[i];
-							arrayPassengers[i] = arrayPassengers[j];
-							arrayPassengers[j] = auxiliar;
-						}
-						else
-						{
-							if(strcmp(arrayPassengers[i].flycode, arrayPassengers[j].flycode) == 0)
-							{
-								if(arrayFlyCodes[i].statusFlight > arrayFlyCodes[j].statusFlight)
-								{
-									auxiliar = arrayPassengers[i];
-									arrayPassengers[i] = arrayPassengers[j];
-									arrayPassengers[j] = auxiliar;
-								}
-
-							}
-						}
-					}
-					else
-					{
-						if(order == DESCENDENTE)
-						{
-							if(strcmp(arrayPassengers[i].flycode, arrayPassengers[j].flycode) < 0)
-							{
-								auxiliar = arrayPassengers[i];
-								arrayPassengers[i] = arrayPassengers[j];
-								arrayPassengers[j] = auxiliar;
-							}
-							else
-							{
-								if(strcmp(arrayPassengers[i].flycode, arrayPassengers[j].flycode) == 0)
-								{
-									if(arrayFlyCodes[i].statusFlight < arrayFlyCodes[j].statusFlight)
-									{
-										auxiliar = arrayPassengers[i];
-										arrayPassengers[i] = arrayPassengers[j];
-										arrayPassengers[j] = auxiliar;
-									}
-
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	return error;
-}
-
-float PromedioVuelos(ePassenger arrayPassengers[], int lenPassengers)
-{
-	float acumuladorPrecios;
-	int contadorPasajeros;
-	float promedio;
-
-	contadorPasajeros = 0;
-
-	for(int i = 0; i < lenPassengers; i++)
-	{
-		if(arrayPassengers[i].isEmpty == FALSE)
-		{
-			acumuladorPrecios += arrayPassengers[i].price;
-			contadorPasajeros++;
-		}
-	}
-	promedio = CalcularPromedio(acumuladorPrecios, contadorPasajeros);
-	printf("\nSuma de todos los precios: %.2f\n", acumuladorPrecios);
-	printf("\nPromedio de precios de los pasajes: %.2f", promedio);
-
-	return promedio;
-}
-
-int SuperiorAlPromedio(ePassenger arrayPassengers[], int lenPassengers, float promedio)
-{
-	int contador;
-
-	contador = 0;
-
-	for(int i = 0; i < lenPassengers; i++)
-	{
-		if(arrayPassengers[i].price > promedio)
-		{
-			contador++;
-		}
-	}
-	return contador;
-}
-
-float CalcularPromedio(float acumulador, int contador)
-{
-	float resultado;
-
-	resultado = acumulador / contador;
-
-	return resultado;
-}
-
-void printStatusActivo(ePassenger arrayPassengers[], int lenPassengers, eFlyCode arrayFlyCodes[], int lenFlyCodes)
-{
-	for(int i = 0; i < lenPassengers; i++)
-	{
-		if(arrayPassengers[i].isEmpty == FALSE)
-		{
-			for(int j = 0; j < lenFlyCodes; j++)
-			{
-				if(arrayFlyCodes[j].isEmpty == FALSE)
-				{
-					sortPassengersByCode(arrayPassengers, lenPassengers, ASCENDENTE, arrayFlyCodes, lenFlyCodes);
-					if(strcmp(arrayPassengers[i].flycode, arrayFlyCodes[j].flyCode) == 0)
-					{
-						if(arrayFlyCodes[j].statusFlight == ACTIVO)
-						{
-							PrintOnePassenger(arrayPassengers[i], arrayFlyCodes[j]);
-						}
-					}
-
-				}
-			}
-		}
-	}
+	return validacion;
 }

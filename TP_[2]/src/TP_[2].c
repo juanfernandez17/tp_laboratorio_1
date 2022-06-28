@@ -1,185 +1,138 @@
-/*
-	Fernàndez Juan Ignacio 1ºB
-	Trabajo pràctico Nº2
-*/
-#include <stdio_ext.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
 
-#include "Input.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include "utn.h"
 #include "ArrayPassenger.h"
 #include "ArrayFlyCode.h"
-#include "Menu.h"
 
 #define TAM_P 2000
-#define TAM_F 50
-#define ASCENDENTE 1
-#define DESCENDENTE 0
-#define TRUE 1
-#define FALSE 2
-#define ACTIVO 1
+#define TAM_F 100
 
 int main(void) {
 
 	setbuf(stdout, NULL);
 
-	ePassenger arrayPassengers[TAM_P];
-	eFlyCode arrayFlyCodes[TAM_F];
-	int retorno;
-	int opcion;
-	int opcionDos;
-	int eliminarId;
-	int modificarId;
-	int flagPasajeros;
-	int flagFlyCode;
-	float promedioPasajes;
-	int cantSuperiorPromedio;
+	Passenger listPassengers[TAM_P];
+	FlyCode listFlyCodes[TAM_F];
+	int option;
+	int optionSubMenu;
+	int lastIdPassenger;
+	int lastIdFlyCode;
+	int flagCargaForzada;
+	int retornoDelete;
+	int cantPasajeros;
+	int retornoAddFlyCode;
+	int retornoAdd;
 
-	initPassengers(arrayPassengers, TAM_P);
-	initFlyCode(arrayFlyCodes, TAM_F);
-
-	flagPasajeros = 0;
-	flagFlyCode = 0;
+	initPassengers(listPassengers, TAM_P);
+	FlyCode_init(listFlyCodes, TAM_F);
+	lastIdPassenger = 0;
+	lastIdFlyCode = 0;
+	flagCargaForzada = 0;
+	cantPasajeros = 0;
 
 	do
 	{
-		MostrarMenu(&opcion);
+		utn_getNumero(&option, "\n******* MENU PRINCIPAL *******\n"
+				"1. Alta pasajero\n2. Modificar pasajero\n3. Baja pasajero\n4. Informar\n"
+				"5. Carga forzada (5 pasajeros y 4 codigos de vuelo)\n6. Alta codigo vuelo\n7. Salir\n\n"
+				"Seleccione una opcion: ", "Error, intentelo de nuevo: ", 1, 7);
 
-		switch(opcion)
+		switch(option)
 		{
 			case 1:
-				if(flagFlyCode == 0)
+				if(cantPasajeros < 1)
 				{
-					printf("\nNo se puede cargar usuarios ya que no se ha ingresado ningun codigo de vuelo.\n"
-							"Ingrese un codigo con la opcion 6 primero"); // Si no hay ningun codigo de vuelo significa que no existen vuelos.
-																		//Por lo tanto no pueden existir pasajeros hasta que no exista un vuelo antes.
+					printf("\nNo puede ingresar un nuevo pasajero sin antes haber ingresado un codigo de vuelo!");
 				}
 				else
 				{
-					retorno = PedirDatos(arrayPassengers, TAM_P, arrayFlyCodes, TAM_F);
-					if(retorno == -1)
+					retornoAdd = Passenger_PedirDatos(listPassengers, TAM_P, listFlyCodes, TAM_F, &lastIdPassenger);
+
+					if(retornoAdd != 0)
 					{
-						printf("\nError, no se ha logrado dar de alta al pasajero en el sistema.");
+						printf("\nError al ingresar el nuevo pasajero a la lista!");
 					}
 					else
 					{
-						printf("\nSe ha dado de alta al pasajero!");
-						flagPasajeros = flagPasajeros + 1;
+						printf("\nSe ingreso el nuevo pasajero a la lista!");
 					}
 				}
 				break;
 			case 2:
-				if(flagPasajeros == 0)
+				if(cantPasajeros < 1)
 				{
-					printf("\nNo se puede acceder a esta opcion sin antes haber ingresado un pasajero.\n");
+					printf("\nNo puede modificar un pasajero sin antes haber cargado, al menos, un pasajero a la lista!");
 				}
 				else
 				{
-					printPassengers(arrayPassengers, TAM_P, arrayFlyCodes, TAM_F);
-					utn_getNumero(&modificarId, "\nID del pasajero que quiere modificar: ", "Error, rango de ID no valido. Intentelo de nuevo: ", 1, 2000);
-					retorno = modifyPassenger(arrayPassengers, TAM_P, arrayFlyCodes, TAM_F, modificarId);
-					switch(retorno)
-					{
-					case 0:
-						printf("\nSe han guardado las modificaciones!");
-						break;
-					case 1:
-						printf("\nSe ha encontrado al usuario, pero no han realizado modificaciones.");
-						break;
-					default:
-						printf("\nNo se ha encontrado el ID");
-						break;
-					}
+					Passenger_modify(listPassengers, TAM_P, listFlyCodes, TAM_F);
 				}
 				break;
 			case 3:
-				if(flagPasajeros == 0)
+				if(cantPasajeros < 1)
 				{
-					printf("\nNo se puede acceder a esta opcion sin antes haber ingresado un pasajero.\n");
+					printf("\nNo puede eliminar un pasajero sin antes haber cargado, al menos, un pasajero a la lista!");
 				}
 				else
 				{
-					printPassengers(arrayPassengers, TAM_P, arrayFlyCodes, TAM_F);
-					utn_getNumero(&eliminarId, "\nID del pasajero que quiere eliminar: ", "Error, rango de ID no valido. Intentelo de nuevo: ", 1, 2000);
-					retorno = removePassengerById(arrayPassengers, TAM_P, eliminarId);
-
-					switch(retorno)
+					retornoDelete = Passenger_delete(listPassengers, TAM_P, listFlyCodes, TAM_F);
+					if(retornoDelete == 0)
 					{
-						case 1:
-							printf("\nSe ha encontrado al usuario, pero no lo dio de baja.");
-							break;
-						case 0:
-							printf("\nSe ha dado de baja al pasajero del sistema!");
-							flagPasajeros = flagPasajeros - 1;
-							break;
-						default:
-							printf("\nNo se ha encontrado el ID");
-							break;
+						printf("\nSe dio de baja el pasajero!");
+						cantPasajeros--;
 					}
 				}
 				break;
 			case 4:
-				if(flagPasajeros == 0)
+				if(cantPasajeros < 1)
 				{
-					printf("\nNo se puede acceder a esta opcion sin antes haber ingresado un pasajero.\n");
+					printf("\nNo puede acceder al submenu de informes sin antes haber ingresado, al menos, un pasajero a la lista!");
 				}
 				else
 				{
-					MostrarSubMenu(&opcionDos);
-					switch(opcionDos)
-					{
-						case 1:
-							sortPassengers(arrayPassengers, TAM_P, ASCENDENTE);
-							printPassengers(arrayPassengers, TAM_P, arrayFlyCodes, TAM_F);
-							break;
-						case 2:
-							promedioPasajes = PromedioVuelos(arrayPassengers, TAM_P);
-							cantSuperiorPromedio = SuperiorAlPromedio(arrayPassengers, TAM_P, promedioPasajes);
-							printf("\nCantidad de pasajeros que superan el promedio: %d", cantSuperiorPromedio);
-							break;
-						case 3:
-							printStatusActivo(arrayPassengers, TAM_P, arrayFlyCodes, TAM_F);
-							break;
-						default:
-							printf("\nHa salido del menu de informes.\n");
-							break;
-					}
+					utn_getNumero(&optionSubMenu, "\n******* MENU DE INFORMES *******\n"
+							"1. Listar pasajeros por apellido y tipo de pasajero\n"
+							"2. Total y promedio de precios de los pasajes y cantidad de pasajeros que superan el precio promedio\n"
+							"3. Listar pasajeros por codigo de vuelo y estado de vuelos Activo\n"
+							"4. Regresar al menu principal\n\n"
+							"Seleccione una opcion: ", "Error, intentelo de nuevo: ", 1, 4);
+					Passenger_subMenu(optionSubMenu, listPassengers, TAM_P, listFlyCodes);
 				}
 				break;
 			case 5:
-				AltaForzadaCodigos(arrayFlyCodes, TAM_F);
-				retorno = AltaForzadaPasajeros(arrayPassengers, TAM_P);
-				flagFlyCode = flagFlyCode + 4;
-				if(retorno == 0)
+				if(flagCargaForzada == 0)
 				{
-					printf("\nSe han cargado correctamente los pasajeros y codigos de vuelo.");
-					flagPasajeros = flagPasajeros + 5;
+					Passenger_CargaForzada(listPassengers, TAM_P);
+					FlyCode_CargaForzada(listFlyCodes, TAM_F);
+					lastIdPassenger += 5;
+					lastIdFlyCode += 4;
+					cantPasajeros += 5;
+					flagCargaForzada = 1;
+					printf("\nSe han cargado 5 pasajeros y 4 codigos de vuelo!");
 				}
 				else
 				{
-					printf("\nError, no se ha logrado completar la carga forzada.");
+					printf("\nYa ha realizado la carga forzada previamente!");
 				}
 				break;
 			case 6:
-				retorno = AltaFlyCode(arrayFlyCodes, TAM_F);
-				if(retorno == -1)
+				retornoAddFlyCode = addFlyCode(listFlyCodes, TAM_F, &lastIdFlyCode);
+
+				if(retornoAddFlyCode == 0)
 				{
-					printf("\nNo se pueden cargar mas codigos de vuelo en el sistema.");
+					printf("\nSe dio de alta el nuevo codigo!");
+					lastIdFlyCode += 1;
 				}
 				else
 				{
-					printf("\nSe ha cargado del codigo de vuelo en el sistema.");
-					flagFlyCode = flagFlyCode + 1;
+					printf("\nNo se logro dar de alta el nuevo codigo!");
 				}
 				break;
 			default:
-				printf("\nSaliò del programa. Saludos!");
+				printf("\nPrograma cerrado. Saludos!");
 				break;
 		}
-	} while(opcion != 7);
+	} while(option != 7);
 	return 0;
 }
-
-
-
